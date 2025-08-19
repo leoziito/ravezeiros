@@ -10,16 +10,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow-x: hidden; }
-        html, body { height: 100%; width: 100%; overflow-x: hidden;}
+        /* CORREÇÃO: Layout de altura total para o corpo para corrigir problemas de rolagem */
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* Prevenir rolagem dupla */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+        }
         .scrolling-container::-webkit-scrollbar { width: 8px; }
         .scrolling-container::-webkit-scrollbar-track { background: #000; }
         .scrolling-container::-webkit-scrollbar-thumb { background-color: #444; border-radius: 20px; border: 2px solid #000; }
         .scrolling-container { scrollbar-width: thin; scrollbar-color: #444 #000; }
         button:disabled { opacity: 0.6; cursor: not-allowed; }
         .verification-seal { width: 1rem; height: 1rem; margin-left: 0.25rem; vertical-align: middle; display: inline-block; }
-        .photo-scroll-container::-webkit-scrollbar { display: none; }
-        .photo-scroll-container { -ms-overflow-style: none; scrollbar-width: none; }
         .skeleton-post { background-color: #1a1a1a; border-radius: 1rem; padding: 1rem; margin-bottom: 1rem; }
         .skeleton-header { display: flex; align-items: center; }
         .skeleton-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: #333; }
@@ -33,9 +42,13 @@
         .online-indicator { width: 12px; height: 12px; background-color: #22c55e; border-radius: 50%; position: absolute; bottom: 0; right: 0; border: 2px solid #000; }
         .spinner { border: 2px solid #f3f3f3; border-top: 2px solid #3498db; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .post-highlight {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+            transition: box-shadow 1s ease-in-out;
+        }
     </style>
 </head>
-<body class="bg-black text-white flex flex-col items-center p-4 min-h-screen">
+<body class="bg-black text-white p-4">
 
     <div id="initError" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center text-center p-4 hidden">
         <i class="fas fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
@@ -43,7 +56,8 @@
         <p class="text-white text-opacity-70">Não foi possível conectar ao servidor. Por favor, verifique sua conexão com a internet e tente novamente mais tarde.</p>
     </div>
 
-    <header class="w-full flex justify-between items-center py-4 relative z-20">
+    <!-- CORREÇÃO: Removido o preenchimento do corpo, aplicado a seções individuais -->
+    <header class="w-full flex justify-between items-center py-4 relative z-20 flex-shrink-0">
         <button id="profileButton" class="p-2 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-colors">
             <i class="fas fa-bars text-2xl"></i>
         </button>
@@ -63,7 +77,7 @@
         </div>
     </header>
 
-    <nav class="flex space-x-2 my-4">
+    <nav class="flex justify-center space-x-2 my-4 flex-shrink-0">
         <button id="feedTab" class="py-1 px-3 rounded-lg font-semibold text-sm transition-colors duration-200 bg-white text-black">
             Feed
         </button>
@@ -118,7 +132,6 @@
                     <button id="verificationButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
                         <i class="fas fa-check-circle mr-2"></i> Selo de Verificação
                     </button>
-                    <!-- CORREÇÃO: Novo botão de Configurações -->
                     <button id="settingsButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
                         <i class="fas fa-cog mr-2"></i> Configurações
                     </button>
@@ -151,7 +164,6 @@
         </div>
     </div>
     
-    <!-- CORREÇÃO: Novo Modal de Configurações -->
     <div id="settingsModal" class="fixed inset-0 z-[60] bg-black bg-opacity-90 hidden flex items-center justify-center">
         <div class="w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 bg-black rounded-2xl p-6 flex flex-col space-y-4 border border-white border-opacity-20">
              <div class="flex justify-between items-center">
@@ -279,21 +291,18 @@
         </div>
     </div>
 
-    <!-- MAIN APP CONTAINER -->
-    <main id="app-container" class="w-full h-full flex-grow flex flex-col items-center">
-        <div id="newPostNotification" class="w-full max-w-lg mt-4 hidden z-30">
+    <!-- CORREÇÃO: Estrutura do contêiner principal para rolagem adequada -->
+    <main id="app-container" class="w-full flex-grow flex flex-col items-center overflow-hidden relative">
+        <div id="newPostNotification" class="w-full max-w-lg mt-4 hidden z-30 absolute top-0">
              <button id="showNewPostsBtn" class="w-full bg-white text-black font-semibold py-2 px-4 rounded-lg shadow-lg transition-transform hover:scale-105 active:scale-95">
                 Ver novos posts
             </button>
         </div>
 
-        <!-- Feed Section -->
-        <div id="feed" class="w-full max-w-lg mt-4 space-y-4 overflow-y-auto scrolling-container" style="height: calc(100vh - 10rem);">
-            <!-- Skeleton loaders will be injected here -->
+        <div id="feed" class="w-full max-w-lg space-y-4 overflow-y-auto scrolling-container h-full pt-4">
+            <!-- As postagens serão injetadas aqui -->
         </div>
         <div id="feed-end-message" class="text-center text-white text-opacity-50 py-8 hidden"><p>Você chegou ao fim.</p></div>
-        <div id="loadMoreIndicator" class="w-full max-w-lg py-4 text-center hidden">
-        </div>
     </main>
     
     <div id="badgeNotification" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white text-black px-6 py-3 rounded-full shadow-lg transition-transform duration-300 transform scale-0 origin-bottom z-50">
@@ -386,41 +395,37 @@
         </div>
     </div>
 
-    <!-- CORREÇÃO: Layout de rolagem de página inteira com cabeçalho fixo -->
-    <div id="profileCardPage" class="fixed inset-0 z-[60] bg-black hidden overflow-y-auto scrolling-container w-screen">
-        <!-- Header Fixo -->
-        <div class="sticky top-0 z-20 bg-black bg-opacity-80 backdrop-blur-sm">
-            <div class="p-4">
-                 <div class="flex justify-between items-center mb-4">
-                    <button id="closeProfileCardPage" class="text-white p-2 rounded-full hover:bg-white hover:bg-opacity-10 transition-colors">
-                        <i class="fas fa-arrow-left text-xl"></i>
-                    </button>
-                    <h2 id="cardUsernameTop" class="text-lg font-bold"></h2>
-                    <button id="shareProfileButton" class="text-white p-2 rounded-full hover:bg-white hover:bg-opacity-10 transition-colors">
-                        <i class="fas fa-share-alt text-lg"></i>
-                    </button>
-                </div>
-
-                <div id="cardHeader" class="relative w-full h-32 sm:h-40 bg-white bg-opacity-10 rounded-xl overflow-hidden">
-                    <img id="cardHeaderImage" src="" class="absolute inset-0 w-full h-full object-cover">
-                </div>
-                 <div class="relative -mt-12 z-10 flex flex-col items-center">
-                    <div id="cardProfileImageContainer" class="w-24 h-24 rounded-full border-4 border-black bg-white flex items-center justify-center overflow-hidden">
-                        <img id="cardProfileImage" src="" class="w-full h-full object-cover hidden">
-                        <i id="cardProfilePlaceholder" class="fas fa-user text-4xl text-black"></i>
-                    </div>
-                </div>
+    <!-- CORREÇÃO: Removido o cabeçalho fixo para permitir a rolagem de página inteira -->
+    <div id="profileCardPage" class="fixed inset-0 z-[60] bg-black hidden overflow-y-auto scrolling-container w-screen p-4">
+        <div class="max-w-lg mx-auto">
+            <div class="flex justify-between items-center mb-4">
+                <button id="closeProfileCardPage" class="text-white p-2 rounded-full hover:bg-white hover:bg-opacity-10 transition-colors">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </button>
+                <h2 id="cardUsernameTop" class="text-lg font-bold"></h2>
+                <button id="shareProfileButton" class="text-white p-2 rounded-full hover:bg-white hover:bg-opacity-10 transition-colors">
+                    <i class="fas fa-share-alt text-lg"></i>
+                </button>
             </div>
 
-            <!-- Seção de Informações do Perfil -->
-            <div class="p-4 pt-0 text-center w-full">
+            <div id="cardHeader" class="relative w-full h-32 sm:h-40 bg-white bg-opacity-10 rounded-xl overflow-hidden">
+                <img id="cardHeaderImage" src="" class="absolute inset-0 w-full h-full object-cover">
+            </div>
+             <div class="relative -mt-12 z-10 flex flex-col items-center">
+                <div id="cardProfileImageContainer" class="w-24 h-24 rounded-full border-4 border-black bg-white flex items-center justify-center overflow-hidden">
+                    <img id="cardProfileImage" src="" class="w-full h-full object-cover hidden">
+                    <i id="cardProfilePlaceholder" class="fas fa-user text-4xl text-black"></i>
+                </div>
+            </div>
+            
+            <div class="p-4 pt-2 text-center w-full">
                 <h2 id="cardProfileName" class="text-2xl font-bold flex justify-center items-center"></h2>
                 <p id="cardBio" class="text-sm text-white text-opacity-80 mt-3 break-words max-w-lg mx-auto"></p>
                 <div id="socialLinksContainer" class="flex justify-center items-center space-x-4 mt-4"></div>
                 
-                <!-- CORREÇÃO: Botão "Sobre" e container de detalhes -->
-                <button id="aboutButton" class="mt-4 text-sm bg-white bg-opacity-10 text-white font-semibold py-2 px-4 rounded-lg hover:bg-opacity-20 transition-colors">
-                    Sobre <i class="fas fa-chevron-down ml-2 transition-transform"></i>
+                <!-- CORREÇÃO: Botão "Sobre" menor -->
+                <button id="aboutButton" class="mt-4 text-xs bg-white bg-opacity-10 text-white font-semibold py-1 px-3 rounded-full hover:bg-opacity-20 transition-colors">
+                    Sobre <i class="fas fa-chevron-down ml-1 transition-transform text-xs"></i>
                 </button>
                 <div id="aboutDetails" class="hidden mt-3 text-sm text-white text-opacity-70 max-w-lg mx-auto p-3 bg-white bg-opacity-5 rounded-lg">
                     <div class="grid grid-cols-2 gap-2 text-left">
@@ -449,30 +454,24 @@
                 </button>
             </div>
             
-            <!-- Abas -->
             <div class="w-full max-w-lg mx-auto px-4">
                 <div class="flex space-x-4 border-b border-white border-opacity-10">
                     <button id="cardFeedTab" class="flex-1 py-2 text-sm font-semibold border-b-2 border-white text-white">Feed</button>
                     <button id="cardPostsTab" class="flex-1 py-2 text-sm font-semibold border-b-2 border-transparent text-gray-400">Postagens</button>
                 </div>
             </div>
-        </div>
 
-        <!-- Conteúdo Rolável -->
-        <div id="profileCardContent">
-            <!-- Conteúdo do Feed -->
-            <div id="cardFeedContent" class="w-full max-w-lg mx-auto">
-                <div id="additionalPhotosContainer" class="p-4 w-full mx-auto hidden">
-                    <div id="photosWrapper" class="grid grid-cols-3 gap-2"></div>
+            <div id="profileCardContent">
+                <div id="cardFeedContent" class="w-full max-w-lg mx-auto">
+                    <div id="additionalPhotosContainer" class="p-4 w-full mx-auto hidden">
+                        <div id="photosWrapper" class="grid grid-cols-3 gap-2"></div>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Conteúdo das Postagens -->
-            <div id="cardPostsContent" class="w-full max-w-lg mx-auto hidden">
-                <div id="userPostsFeed" class="w-full mx-auto p-4 space-y-4">
-                    <!-- Postagens do usuário serão carregadas aqui -->
+                <div id="cardPostsContent" class="w-full max-w-lg mx-auto hidden">
+                    <div id="userPostsFeed" class="w-full mx-auto py-4 space-y-4">
+                    </div>
+                    <div id="user-posts-end-message" class="text-center text-white text-opacity-50 py-8 hidden"><p>Fim das postagens.</p></div>
                 </div>
-                <div id="user-posts-end-message" class="text-center text-white text-opacity-50 py-8 hidden"><p>Fim das postagens.</p></div>
             </div>
         </div>
     </div>
@@ -671,7 +670,6 @@
         <img id="lightboxImage" src="" class="max-w-[90vw] max-h-[90vh] object-contain">
     </div>
 
-    <!-- CORREÇÃO: Adicionado scrolling-container para rolagem -->
     <div id="followersModal" class="fixed inset-0 z-[70] bg-black bg-opacity-90 hidden flex items-center justify-center">
         <div class="w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 bg-black rounded-2xl p-6 shadow-2xl flex flex-col space-y-4 border border-white border-opacity-20 max-h-[80vh]">
             <div class="flex justify-between items-center">
@@ -708,7 +706,6 @@
         </div>
     </div>
 
-    <!-- Feedback Toast for Copying Links -->
     <div id="copyFeedback" class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-green-500 text-white text-sm px-4 py-2 rounded-full hidden z-[100]">Link copiado!</div>
 
 
@@ -749,7 +746,6 @@
             getCountFromServer
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        // Your web app's Firebase configuration
         const firebaseConfig = {
           apiKey: "AIzaSyClnvjH-W80zdeoV34_lWZ-SF-HdZ31aHw",
           authDomain: "fofocandorave.firebaseapp.com",
@@ -760,14 +756,11 @@
         };
         
         const appId = 'rave-app-producao';
-
-        // ImgBB API key
         const imgbbApiKey = "9a792281a6220ed358215ad0c1e4162e";
         const verificationSealUrl = 'https://img.icons8.com/?size=512&id=2sZ0sdlG9kWP&format=png';
 
         let app, db, auth;
         
-        // DOM elements
         const mainHeader = document.getElementById('mainHeader');
         const profileButton = document.getElementById('profileButton');
         const searchButton = document.getElementById('searchButton');
@@ -782,7 +775,6 @@
         const searchResults = document.getElementById('searchResults');
         const searchPostsTab = document.getElementById('searchPostsTab');
         const searchUsersTab = document.getElementById('searchUsersTab');
-
         const postModal = document.getElementById('postModal');
         const postFab = document.getElementById('postFab');
         const closePostModal = document.getElementById('closePostModal');
@@ -795,23 +787,18 @@
         const postImagePreviewContainer = document.getElementById('postImagePreviewContainer');
         const postImagePreview = document.getElementById('postImagePreview');
         const postLimitMessage = document.getElementById('postLimitMessage');
-
         const feed = document.getElementById('feed');
-        const loadMoreIndicator = document.getElementById('loadMoreIndicator');
         const feedEndMessage = document.getElementById('feed-end-message');
-
         const feedTab = document.getElementById('feedTab');
         const anonymousTab = document.getElementById('anonymousTab');
         const trendingTab = document.getElementById('trendingTab');
         const postModalTitle = document.getElementById('postModalTitle');
-
         const sideMenu = document.getElementById('sideMenu');
         const sideMenuOverlay = document.getElementById('sideMenuOverlay');
         const closeSideMenu = document.getElementById('closeSideMenu');
         const editProfileButton = document.getElementById('editProfileButton');
         const rulesButton = document.getElementById('rulesButton');
         const draftsButton = document.getElementById('draftsButton');
-        
         const profileEditModal = document.getElementById('profileEditModal');
         const closeProfileEditModal = document.getElementById('closeProfileEditModal');
         const profileImage = document.getElementById('profileImage');
@@ -828,15 +815,12 @@
         const profileFileName = document.getElementById('profileFileName');
         const profileUploadProgress = document.getElementById('profileUploadProgress');
         const saveProfile = document.getElementById('saveProfile');
-        
         const rulesModal = document.getElementById('rulesModal');
         const closeRulesModal = document.getElementById('closeRulesModal');
-
         const deleteConfirmationModal = document.getElementById('deleteConfirmationModal');
         const confirmationModalText = document.getElementById('confirmationModalText');
         const confirmDeleteBtn = document.getElementById('confirmDelete');
         const cancelDeleteBtn = document.getElementById('cancelDelete');
-        
         const editPostModal = document.getElementById('editPostModal');
         const closeEditPostModal = document.getElementById('closeEditPostModal');
         const editPostContent = document.getElementById('editPostContent');
@@ -846,12 +830,10 @@
         const removeEditImage = document.getElementById('removeEditImage');
         const editPostImageFile = document.getElementById('editPostImageFile');
         const saveEditedPost = document.getElementById('saveEditedPost');
-
         const editCommentModal = document.getElementById('editCommentModal');
         const closeEditCommentModal = document.getElementById('closeEditCommentModal');
         const editCommentContent = document.getElementById('editCommentContent');
         const saveEditedComment = document.getElementById('saveEditedComment');
-        
         const loggedInButtons = document.getElementById('loggedInButtons');
         const loginSignupButton = document.getElementById('loginSignupButton');
         const logoutButton = document.getElementById('logoutButton');
@@ -870,18 +852,12 @@
         const newPasswordInput = document.getElementById('newPasswordInput');
         const saveNewPassword = document.getElementById('saveNewPassword');
         const changePasswordMessage = document.getElementById('changePasswordMessage');
-        const deleteProfileConfirmationModal = document.getElementById('deleteProfileConfirmationModal');
-        const confirmDeleteProfile = document.getElementById('confirmDeleteProfile');
-        const cancelDeleteProfile = document.getElementById('cancelDeleteProfile');
-
-        // Settings Modal (Refactored)
         const settingsButton = document.getElementById('settingsButton');
         const settingsModal = document.getElementById('settingsModal');
         const closeSettingsModal = document.getElementById('closeSettingsModal');
         const changePasswordButton = settingsModal.querySelector('#changePasswordButton');
         const deleteProfileButton = settingsModal.querySelector('#deleteProfileButton');
         const editProfileCardButton = settingsModal.querySelector('#editProfileCardButton');
-
         const profileCardPage = document.getElementById('profileCardPage');
         const closeProfileCardPage = document.getElementById('closeProfileCardPage');
         const cardHeaderImage = document.getElementById('cardHeaderImage');
@@ -921,8 +897,6 @@
         const cardPostsTab = document.getElementById('cardPostsTab'); 
         const cardFeedContent = document.getElementById('cardFeedContent'); 
         const cardPostsContent = document.getElementById('cardPostsContent'); 
-
-        // About Button (Refactored)
         const aboutButton = document.getElementById('aboutButton');
         const aboutDetails = document.getElementById('aboutDetails');
         const cardPronouns = document.getElementById('cardPronouns');
@@ -932,14 +906,11 @@
         const cardZodiac = document.getElementById('cardZodiac');
         const cardRelationshipStatus = document.getElementById('cardRelationshipStatus');
         const cardPersonality = document.getElementById('cardPersonality');
-
         const newPostNotification = document.getElementById('newPostNotification');
         const showNewPostsBtn = document.getElementById('showNewPostsBtn');
-        
         const draftsModal = document.getElementById('draftsModal');
         const closeDraftsModal = document.getElementById('closeDraftsModal');
         const draftsList = document.getElementById('draftsList');
-
         const verificationButton = document.getElementById('verificationButton');
         const verificationPage = document.getElementById('verificationPage');
         const backFromVerificationPage = document.getElementById('backFromVerificationPage');
@@ -955,19 +926,15 @@
         const verificationImagePreview = document.getElementById('verificationImagePreview');
         const badgeNotification = document.getElementById('badgeNotification');
         const acceptBadgeButton = document.getElementById('acceptBadgeButton');
-
-
         const lightboxModal = document.getElementById('lightboxModal');
         const lightboxImage = document.getElementById('lightboxImage');
         const closeLightbox = document.getElementById('closeLightbox');
-
         const followersModal = document.getElementById('followersModal');
         const followersModalTitle = document.getElementById('followersModalTitle');
         const closeFollowersModal = document.getElementById('closeFollowersModal');
         const followersList = document.getElementById('followersList');
         const followersButton = document.getElementById('followersButton');
         const backToTopBtn = document.getElementById('backToTopBtn');
-
         const discardPostModal = document.getElementById('discardPostModal');
         const confirmDiscard = document.getElementById('confirmDiscard');
         const saveDraftAndClose = document.getElementById('saveDraftAndClose');
@@ -976,7 +943,6 @@
         const viewProfilePhoto = document.getElementById('viewProfilePhoto');
         const viewProfileCard = document.getElementById('viewProfileCard');
         const cancelProfileAction = document.getElementById('cancelProfileAction');
-
         const adminModal = document.getElementById('adminModal');
         const backFromAdminPage = document.getElementById('backFromAdminPage');
         const pendingRequestsList = document.getElementById('pendingRequestsList');
@@ -984,39 +950,34 @@
         const refreshAdminData = document.getElementById('refreshAdminData');
         const ADMIN_UID = 'ArPXYRr8biPpbWOYoWCzlWOloMO2';
 
-        // State variables
         let userId = null;
         let isRegisteredUser = false;
         let currentUserProfile = null;
         let currentTab = 'feed';
-        let postSubscription = null;
         let editingPostId = null;
         let editingDraftId = null;
         let editingComment = null;
         let isAuthModalInLoginMode = true;
         let currentProfileCardOwnerId = null;
-        let listenerStartTime = null; 
         let confirmationCallback = null;
         let autoSaveInterval = null;
         let profileActionData = {};
         let currentCardTab = 'feed'; 
-        
         let renderedPostIds = new Set();
         let newPostsQueue = [];
-        
         const postsPerPage = 10;
         let lastVisibleDoc = null;
         let isLoadingPosts = false;
         let allPostsLoaded = false;
         let isSearching = false;
         let searchMode = 'posts';
-
         const commentListeners = new Map();
         const cardPageListeners = new Map(); 
         const userProfileCache = new Map();
         let pendingRequestsListener = null;
         let verifiedUsersListener = null;
         let notificationListener = null;
+        const postListeners = new Map();
         
         const showSpinner = (button, text = '') => {
             button.disabled = true;
@@ -1140,9 +1101,8 @@
 
             const likesCount = post.likesCount || 0;
             const commentsCount = post.commentsCount || 0;
-            // CORREÇÃO: Imagem do post com tamanho limitado
             const postImageHtml = post.postImage ? `
-                <div class="mt-4 rounded-lg w-full max-h-96 overflow-hidden flex justify-center items-center bg-black">
+                <div class="mt-4 rounded-lg w-full max-h-80 overflow-hidden flex justify-center items-center bg-black">
                     <img src="${post.postImage}" alt="Post Image" class="w-full h-full object-contain cursor-pointer post-image-clickable">
                 </div>
             ` : '';
@@ -1183,6 +1143,28 @@
                     <div class="comment-list space-y-3"></div>
                     ${commentInputAreaHtml}
                 </div>`;
+            
+            const collectionName = post.isAnonymous ? 'anonymous_posts' : 'posts';
+            const postRef = doc(db, `artifacts/${appId}/public/data/${collectionName}/${post.id}`);
+            const unsubscribe = onSnapshot(postRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const updatedPost = docSnap.data();
+                    const likeCountSpan = postElement.querySelector('.like-btn span');
+                    const commentCountSpan = postElement.querySelector('.comment-toggle-btn span');
+                    const likeIcon = postElement.querySelector('.like-btn i');
+                    
+                    if (likeCountSpan) likeCountSpan.textContent = updatedPost.likesCount || 0;
+                    if (commentCountSpan) commentCountSpan.textContent = updatedPost.commentsCount || 0;
+                    if (likeIcon) {
+                        const isLiked = updatedPost.likedBy && updatedPost.likedBy[userId];
+                        likeIcon.classList.toggle('text-red-500', isLiked);
+                        likeIcon.classList.toggle('text-white', !isLiked);
+                        likeIcon.classList.toggle('text-opacity-50', !isLiked);
+                    }
+                }
+            });
+            postListeners.set(post.id, unsubscribe);
+
             return postElement;
         };
         
@@ -1270,7 +1252,6 @@
         };
         
         const resetProfileUI = () => {
-             // CORREÇÃO: Limpa completamente a UI do perfil
              profileNameDisplay.innerHTML = 'Visitante';
              profileImage.src = '';
              profileImage.classList.add('hidden');
@@ -1301,12 +1282,20 @@
             }
         };
 
+        const cleanupPostListeners = () => {
+            for (const unsubscribe of postListeners.values()) {
+                unsubscribe();
+            }
+            postListeners.clear();
+        };
+
         const loadPosts = async (collectionName, append = false, searchQuery = '') => {
             if (isLoadingPosts || (allPostsLoaded && append)) return;
             isLoadingPosts = true;
             feedEndMessage.classList.add('hidden');
             
             if (!append) {
+                cleanupPostListeners();
                 showSkeletonLoaders();
                 renderedPostIds.clear();
                 allPostsLoaded = false;
@@ -1380,6 +1369,7 @@
         const loadTrendingPosts = async () => {
             if (isLoadingPosts) return;
             isLoadingPosts = true;
+            cleanupPostListeners();
             showSkeletonLoaders();
             renderedPostIds.clear();
             allPostsLoaded = true;
@@ -1420,54 +1410,6 @@
             }
         };
 
-        const listenForPostUpdates = (collectionName) => {
-            if (postSubscription) postSubscription();
-            if(!userId) return;
-
-            newPostsQueue = [];
-            newPostNotification.classList.add('hidden');
-            listenerStartTime = Timestamp.now(); 
-
-            const postsCollectionRef = collection(db, `artifacts/${appId}/public/data/${collectionName}`);
-            const q = query(postsCollectionRef, where('timestamp', '>', listenerStartTime));
-
-            postSubscription = onSnapshot(q, (snapshot) => {
-                let newPostsDetected = false;
-                snapshot.docChanges().forEach(async (change) => {
-                    const postData = { id: change.doc.id, ...change.doc.data() };
-                    
-                    if (change.type === "added" && !renderedPostIds.has(postData.id) && postData.userId !== userId) {
-                        newPostsQueue.unshift(postData);
-                        newPostsDetected = true;
-                    }
-                    if (change.type === "modified") {
-                        const existingPostElement = document.querySelector(`[data-post-id="${change.doc.id}"]`);
-                        if(existingPostElement) {
-                            const commentsContainer = existingPostElement.querySelector('.comments-container');
-                            const areCommentsVisible = !commentsContainer.classList.contains('hidden');
-                            const newElement = await createPostElement({ ...postData, isAnonymous: collectionName === 'anonymous_posts' });
-                            if (areCommentsVisible) {
-                                newElement.querySelector('.comments-container').classList.remove('hidden');
-                            }
-                            existingPostElement.replaceWith(newElement);
-                        }
-                    }
-                    if (change.type === "removed") {
-                        const existingPostElement = document.querySelector(`[data-post-id="${change.doc.id}"]`);
-                        if(existingPostElement) {
-                            existingPostElement.remove();
-                            renderedPostIds.delete(change.doc.id);
-                        }
-                    }
-                });
-
-                if (newPostsDetected && newPostsQueue.length > 0) {
-                    showNewPostsBtn.textContent = `Ver ${newPostsQueue.length} novo${newPostsQueue.length > 1 ? 's' : ''} post${newPostsQueue.length > 1 ? 's' : ''}`;
-                    newPostNotification.classList.remove('hidden');
-                }
-            }, (error) => console.error("Erro no listener em tempo real:", error));
-        };
-        
         const switchTab = (tabName) => {
             currentTab = tabName;
             [feedTab, anonymousTab, trendingTab].forEach(tab => {
@@ -1479,16 +1421,15 @@
             if (tabName === 'feed') {
                 activeTabButton = feedTab;
                 postModalTitle.textContent = 'Nova Postagem';
-                if(userId) { loadPosts('posts', false); listenForPostUpdates('posts'); }
+                if(userId) { loadPosts('posts', false); }
             } else if (tabName === 'anonymous') {
                 activeTabButton = anonymousTab;
                 postModalTitle.textContent = 'Postagem Anônima';
-                if(userId) { loadPosts('anonymous_posts', false); listenForPostUpdates('anonymous_posts'); }
+                if(userId) { loadPosts('anonymous_posts', false); }
             } else {
                 activeTabButton = trendingTab;
                 postModalTitle.textContent = 'Nova Postagem';
                 if(userId) loadTrendingPosts();
-                if (postSubscription) postSubscription();
             }
             
             activeTabButton.classList.add('bg-white', 'text-black');
@@ -1508,7 +1449,6 @@
             } else {
                 loggedInButtons.classList.add('hidden');
                 loginSignupButton.classList.remove('hidden');
-                // CORREÇÃO: Chama resetProfileUI para limpar o menu lateral no logout
                 resetProfileUI(); 
             }
         };
@@ -1564,7 +1504,6 @@
                     try { await signInAnonymously(auth); } catch (error) { console.error("Erro ao fazer login anônimo:", error); }
                 }
                 switchTab('feed');
-                // CORREÇÃO: Processar links diretos após a autenticação
                 handleDirectLinks();
             });
             feed.addEventListener('scroll', () => {
@@ -1601,7 +1540,6 @@
             }
         });
 
-        // --- SEARCH LOGIC ---
         const performUserSearch = async (searchTerm) => {
             if (!searchTerm) {
                 searchResults.innerHTML = '';
@@ -1670,7 +1608,7 @@
                     const collectionToSearch = currentTab === 'anonymous' ? 'anonymous_posts' : 'posts';
                     if(userId) loadPosts(collectionToSearch, false, '');
                 }
-            } else { // User search
+            } else {
                 searchDebounce = setTimeout(() => {
                     performUserSearch(searchTerm);
                 }, 500);
@@ -2064,15 +2002,6 @@
 
             if (button.classList.contains('like-btn')) {
                 if (!userId) return;
-                const likeIcon = button.querySelector('i');
-                const likeCountSpan = button.querySelector('span');
-                const isCurrentlyLiked = likeIcon.classList.contains('text-red-500');
-                const currentLikes = parseInt(likeCountSpan.textContent);
-                likeIcon.classList.toggle('text-red-500', !isCurrentlyLiked);
-                likeIcon.classList.toggle('text-white', isCurrentlyLiked);
-                likeIcon.classList.toggle('text-opacity-50', isCurrentlyLiked);
-                likeCountSpan.textContent = isCurrentlyLiked ? currentLikes - 1 : currentLikes + 1;
-                if (!isCurrentlyLiked) { button.classList.add('liked'); setTimeout(() => button.classList.remove('liked'), 300); }
                 try {
                     await runTransaction(db, async (transaction) => {
                         const postDoc = await transaction.get(postRef);
@@ -2084,11 +2013,7 @@
                         transaction.update(postRef, { likesCount: newLikesCount < 0 ? 0 : newLikesCount, likedBy: likedBy });
                     });
                 } catch(error) {
-                    console.error("Erro ao curtir a postagem, revertendo UI:", error);
-                    likeIcon.classList.toggle('text-red-500', isCurrentlyLiked);
-                    likeIcon.classList.toggle('text-white', !isCurrentlyLiked);
-                    likeIcon.classList.toggle('text-opacity-50', !isCurrentlyLiked);
-                    likeCountSpan.textContent = currentLikes;
+                    console.error("Erro ao curtir a postagem:", error);
                 }
             }
             
@@ -2244,7 +2169,6 @@
             }
         });
 
-        // --- PROFILE CARD PAGE LOGIC ---
         const loadUserPosts = (profileOwnerId) => {
             if (cardPageListeners.has('posts')) {
                 cardPageListeners.get('posts')();
@@ -2311,7 +2235,6 @@
                     cardUsernameTop.textContent = profileData.username ? `@${profileData.username}` : (profileData.name || 'Usuário');
                     cardBio.textContent = profileData.bio || '';
                     
-                    // CORREÇÃO: Preenche os detalhes do "Sobre"
                     const setDetail = (element, label, value) => {
                         if (value) {
                             element.innerHTML = `<strong>${label}:</strong> ${value}`;
@@ -2434,6 +2357,8 @@
             userPostsFeed.innerHTML = '';
             cardFeedContent.classList.remove('hidden');
             cardPostsContent.classList.add('hidden');
+            // CORREÇÃO: Usa replaceState para evitar erro de segurança
+            history.replaceState(null, "", window.location.pathname);
         });
         
         followButton.addEventListener('click', async () => {
@@ -2642,20 +2567,6 @@
             }
         });
 
-        showNewPostsBtn.addEventListener('click', async () => {
-            for (const postData of newPostsQueue) {
-                if (!renderedPostIds.has(postData.id)) {
-                    const newPostElement = await createPostElement({ ...postData, isAnonymous: currentTab === 'anonymous' });
-                    feed.insertBefore(newPostElement, feed.firstChild);
-                    renderedPostIds.add(postData.id);
-                }
-            }
-            newPostsQueue = [];
-            newPostNotification.classList.add('hidden');
-            feed.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // CORREÇÃO: Lógica para copiar links únicos
         const copyToClipboard = (text) => {
             const tempInput = document.createElement('input');
             tempInput.value = text;
@@ -2690,10 +2601,14 @@
             const userIdParam = params.get('user');
             const postIdParam = params.get('post');
 
+            if (userIdParam || postIdParam) {
+                // CORREÇÃO: Usa replaceState para evitar erro de segurança
+                history.replaceState(null, "", window.location.pathname);
+            }
+
             if (userIdParam) {
                 openProfileCard(userIdParam);
             } else if (postIdParam) {
-                // Tenta encontrar o post em ambas as coleções
                 let postDoc;
                 let isAnon = false;
                 try {
@@ -2709,22 +2624,20 @@
                     if (currentTab !== targetTab) {
                         switchTab(targetTab);
                     }
-                    // Aguarda o feed carregar e então rola para o post
-                    setTimeout(() => {
+                    
+                    const interval = setInterval(() => {
                         const postElement = document.querySelector(`[data-post-id="${postIdParam}"]`);
                         if (postElement) {
+                            clearInterval(interval);
                             postElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            postElement.style.boxShadow = '0 0 15px rgba(255, 255, 255, 0.5)';
-                            setTimeout(() => { postElement.style.boxShadow = ''; }, 2000);
+                            postElement.classList.add('post-highlight');
+                            setTimeout(() => { postElement.classList.remove('post-highlight'); }, 2500);
                         }
-                    }, 1000); // Delay to allow posts to render
+                    }, 200);
                 }
             }
         };
 
-        // --- FIM DA LÓGICA DE LINKS ÚNICOS ---
-
-        // Drafts functionality
         draftsButton.addEventListener('click', async () => {
             if (!isRegisteredUser) return;
             draftsModal.classList.remove('hidden');
@@ -2779,7 +2692,6 @@
             }
         });
 
-        // Verification Page Logic
         const showMainApp = (show) => {
             document.querySelector('header').style.display = show ? 'flex' : 'none';
             document.querySelector('nav').style.display = show ? 'flex' : 'none';
@@ -3155,13 +3067,11 @@
             profileActionModal.classList.add('hidden');
         });
 
-        // CORREÇÃO: Lógica do botão "Sobre" no card
         aboutButton.addEventListener('click', () => {
             aboutDetails.classList.toggle('hidden');
             aboutButton.querySelector('i').classList.toggle('rotate-180');
         });
 
-        // CORREÇÃO: Lógica do novo modal de Configurações
         settingsButton.addEventListener('click', () => {
             settingsModal.classList.remove('hidden');
             closeMenu();
