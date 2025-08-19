@@ -54,7 +54,6 @@
             <button id="searchButton" class="p-2 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-colors">
                 <i class="fas fa-search text-2xl"></i>
             </button>
-            <!-- CORREÇÃO: Novo botão de notificação -->
             <div class="relative">
                 <button id="notificationButton" class="p-2 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-colors hidden">
                     <i class="fas fa-bell text-2xl"></i>
@@ -107,30 +106,24 @@
                     <button id="copyUidButton" class="w-full p-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-colors">
                         <p class="text-white text-opacity-50 text-xs">ID: <span id="userIdDisplay" class="text-white break-all font-mono"></span> <i class="fas fa-copy ml-1"></i></p>
                     </button>
-                    <div id="copyFeedback" class="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-green-500 text-white text-xs px-2 py-1 rounded-md hidden">Copiado!</div>
                 </div>
                 
                 <div id="loggedInButtons" class="w-full space-y-2 hidden">
                     <button id="editProfileButton" class="w-full bg-white text-black font-semibold py-3 rounded-xl transition-all hover:bg-white hover:bg-opacity-80 active:scale-95">
                         <i class="fas fa-edit mr-2"></i> Editar Perfil
                     </button>
-                    <button id="editProfileCardButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
-                        <i class="fas fa-address-card mr-2"></i> Editar Card
+                    <button id="draftsButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
+                        <i class="fas fa-file-alt mr-2"></i> Rascunhos
                     </button>
                     <button id="verificationButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
                         <i class="fas fa-check-circle mr-2"></i> Selo de Verificação
                     </button>
-                    <button id="draftsButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
-                        <i class="fas fa-file-alt mr-2"></i> Rascunhos
-                    </button>
-                    <button id="changePasswordButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
-                        <i class="fas fa-key mr-2"></i> Trocar Senha
+                    <!-- CORREÇÃO: Novo botão de Configurações -->
+                    <button id="settingsButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
+                        <i class="fas fa-cog mr-2"></i> Configurações
                     </button>
                      <button id="logoutButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
                         <i class="fas fa-sign-out-alt mr-2"></i> Sair
-                    </button>
-                    <button id="deleteProfileButton" class="w-full bg-red-500 bg-opacity-20 text-red-400 font-semibold py-3 rounded-xl transition-all hover:bg-opacity-30 active:scale-95">
-                        <i class="fas fa-trash-alt mr-2"></i> Excluir Perfil
                     </button>
                 </div>
 
@@ -158,6 +151,29 @@
         </div>
     </div>
     
+    <!-- CORREÇÃO: Novo Modal de Configurações -->
+    <div id="settingsModal" class="fixed inset-0 z-[60] bg-black bg-opacity-90 hidden flex items-center justify-center">
+        <div class="w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 bg-black rounded-2xl p-6 flex flex-col space-y-4 border border-white border-opacity-20">
+             <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold">Configurações</h3>
+                <button id="closeSettingsModal" class="text-white hover:text-white transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="w-full space-y-2">
+                 <button id="editProfileCardButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
+                    <i class="fas fa-address-card mr-2"></i> Editar Card
+                </button>
+                <button id="changePasswordButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
+                    <i class="fas fa-key mr-2"></i> Trocar Senha
+                </button>
+                <button id="deleteProfileButton" class="w-full bg-red-500 bg-opacity-20 text-red-400 font-semibold py-3 rounded-xl transition-all hover:bg-opacity-30 active:scale-95">
+                    <i class="fas fa-trash-alt mr-2"></i> Excluir Perfil
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="authModal" class="fixed inset-0 z-50 bg-black bg-opacity-90 hidden flex items-center justify-center">
         <div class="w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 bg-black rounded-2xl p-6 shadow-2xl flex flex-col space-y-4 border border-white border-opacity-20">
             <div class="flex justify-between items-center">
@@ -215,7 +231,6 @@
                 <img id="profilePreviewImage" src="https://placehold.co/200x200/000000/FFFFFF?text=?" class="w-full h-full object-cover">
             </div>
             <input id="profileNameInput" type="text" placeholder="Seu nome de usuário" class="w-full p-3 bg-white bg-opacity-10 text-white rounded-lg placeholder-white focus:outline-none focus:ring-2 focus:ring-white transition-colors">
-            <!-- Novo campo @username -->
             <div class="relative w-full">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-white text-opacity-50">@</span>
                 <input id="profileUsernameInput" type="text" placeholder="Seu @username" class="w-full p-3 pl-8 bg-white bg-opacity-10 text-white rounded-lg placeholder-white focus:outline-none focus:ring-2 focus:ring-white transition-colors">
@@ -233,7 +248,6 @@
         </div>
     </div>
     
-    <!-- Novo Modal de Notificações -->
     <div id="notificationModal" class="fixed inset-0 z-[60] bg-black bg-opacity-90 transition-opacity duration-300 hidden">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 bg-black rounded-2xl p-6 flex flex-col space-y-4 border border-white border-opacity-20 max-h-[80vh]">
             <button id="closeNotificationModal" class="absolute top-4 right-4 text-white hover:text-white transition-colors">
@@ -279,11 +293,9 @@
         </div>
         <div id="feed-end-message" class="text-center text-white text-opacity-50 py-8 hidden"><p>Você chegou ao fim.</p></div>
         <div id="loadMoreIndicator" class="w-full max-w-lg py-4 text-center hidden">
-            <!-- Now using skeleton loaders, this might be deprecated -->
         </div>
     </main>
     
-    <!-- Nova Notificação de Selo -->
     <div id="badgeNotification" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white text-black px-6 py-3 rounded-full shadow-lg transition-transform duration-300 transform scale-0 origin-bottom z-50">
         <div class="flex items-center space-x-3">
             <i class="fas fa-check-circle text-green-600 text-xl"></i>
@@ -374,10 +386,9 @@
         </div>
     </div>
 
-    <!-- PROFILE CARD PAGE (REWORKED) -->
-    <!-- CORREÇÃO: Alterado para um layout de rolagem de página inteira com cabeçalho fixo -->
+    <!-- CORREÇÃO: Layout de rolagem de página inteira com cabeçalho fixo -->
     <div id="profileCardPage" class="fixed inset-0 z-[60] bg-black hidden overflow-y-auto scrolling-container w-screen">
-        <!-- Header Section (agora fixo no topo da página de rolagem) -->
+        <!-- Header Fixo -->
         <div class="sticky top-0 z-20 bg-black bg-opacity-80 backdrop-blur-sm">
             <div class="p-4">
                  <div class="flex justify-between items-center mb-4">
@@ -401,20 +412,28 @@
                 </div>
             </div>
 
-              <!-- Profile Info Section (parte do cabeçalho fixo) -->
+            <!-- Seção de Informações do Perfil -->
             <div class="p-4 pt-0 text-center w-full">
                 <h2 id="cardProfileName" class="text-2xl font-bold flex justify-center items-center"></h2>
-                <div class="flex flex-wrap justify-center items-center gap-x-2 gap-y-1 mt-2 text-sm text-white text-opacity-70">
-                    <span id="cardPronouns" class="font-semibold"></span>
-                    <span id="cardGender"></span>
-                    <span id="cardSexuality"></span>
-                    <span id="cardAge"></span>
-                    <span id="cardZodiac"></span>
-                    <span id="cardRelationshipStatus"></span>
-                    <span id="cardPersonality"></span>
-                </div>
                 <p id="cardBio" class="text-sm text-white text-opacity-80 mt-3 break-words max-w-lg mx-auto"></p>
                 <div id="socialLinksContainer" class="flex justify-center items-center space-x-4 mt-4"></div>
+                
+                <!-- CORREÇÃO: Botão "Sobre" e container de detalhes -->
+                <button id="aboutButton" class="mt-4 text-sm bg-white bg-opacity-10 text-white font-semibold py-2 px-4 rounded-lg hover:bg-opacity-20 transition-colors">
+                    Sobre <i class="fas fa-chevron-down ml-2 transition-transform"></i>
+                </button>
+                <div id="aboutDetails" class="hidden mt-3 text-sm text-white text-opacity-70 max-w-lg mx-auto p-3 bg-white bg-opacity-5 rounded-lg">
+                    <div class="grid grid-cols-2 gap-2 text-left">
+                        <div id="cardPronouns"></div>
+                        <div id="cardGender"></div>
+                        <div id="cardSexuality"></div>
+                        <div id="cardAge"></div>
+                        <div id="cardZodiac"></div>
+                        <div id="cardRelationshipStatus"></div>
+                        <div id="cardPersonality" class="col-span-2"></div>
+                    </div>
+                </div>
+
                 <div class="flex justify-center items-center space-x-8 mt-4">
                     <button id="followersButton" class="text-center">
                         <p id="followerCount" class="text-lg font-bold">0</p>
@@ -430,7 +449,7 @@
                 </button>
             </div>
             
-            <!-- Tabs for Feed & Posts (parte do cabeçalho fixo) -->
+            <!-- Abas -->
             <div class="w-full max-w-lg mx-auto px-4">
                 <div class="flex space-x-4 border-b border-white border-opacity-10">
                     <button id="cardFeedTab" class="flex-1 py-2 text-sm font-semibold border-b-2 border-white text-white">Feed</button>
@@ -439,19 +458,19 @@
             </div>
         </div>
 
-        <!-- CORREÇÃO: Removido flex-grow e overflow, pois a página inteira agora rola -->
-        <div id="profileCardContent" class="">
-            <!-- Feed Content -->
+        <!-- Conteúdo Rolável -->
+        <div id="profileCardContent">
+            <!-- Conteúdo do Feed -->
             <div id="cardFeedContent" class="w-full max-w-lg mx-auto">
                 <div id="additionalPhotosContainer" class="p-4 w-full mx-auto hidden">
                     <div id="photosWrapper" class="grid grid-cols-3 gap-2"></div>
                 </div>
             </div>
 
-            <!-- Posts Content -->
+            <!-- Conteúdo das Postagens -->
             <div id="cardPostsContent" class="w-full max-w-lg mx-auto hidden">
                 <div id="userPostsFeed" class="w-full mx-auto p-4 space-y-4">
-                    <!-- User posts will be loaded here -->
+                    <!-- Postagens do usuário serão carregadas aqui -->
                 </div>
                 <div id="user-posts-end-message" class="text-center text-white text-opacity-50 py-8 hidden"><p>Fim das postagens.</p></div>
             </div>
@@ -564,7 +583,6 @@
         </div>
     </div>
 
-    <!-- CORREÇÃO: Adicionado 'flex' e 'h-screen' para garantir que o layout flex funcione corretamente e o contêiner de rolagem se expanda -->
     <div id="verificationPage" class="fixed inset-0 z-50 bg-black hidden flex flex-col h-screen">
         <header class="w-full flex justify-between items-center py-4 px-4 sticky top-0 bg-black z-10">
             <button id="backFromVerificationPage" class="p-2 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-colors">
@@ -575,7 +593,6 @@
         </header>
         <div class="flex-grow overflow-y-auto scrolling-container p-4">
             <div class="max-w-lg mx-auto">
-                <!-- Seção para status da solicitação -->
                 <div id="verificationStatusMessage" class="hidden text-center p-4 rounded-lg font-semibold"></div>
                 
                 <div id="verificationFormContainer" class="space-y-4">
@@ -593,7 +610,6 @@
                     <input id="verificationWhatsapp" type="tel" placeholder="WhatsApp para contato *" class="w-full p-3 bg-white bg-opacity-10 text-white rounded-lg placeholder-white focus:outline-none focus:ring-2 focus:ring-white transition-colors">
                     <textarea id="verificationReason" placeholder="Por que você quer ganhar o selo? *" class="w-full p-3 h-24 bg-white bg-opacity-10 text-white rounded-lg placeholder-white focus:outline-none focus:ring-2 focus:ring-white transition-colors resize-none"></textarea>
                     
-                    <!-- Novo campo de upload de imagem para verificação -->
                     <label for="verificationImageFile" class="w-full p-3 bg-white bg-opacity-10 text-white rounded-lg cursor-pointer flex items-center justify-center space-x-2 hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-camera"></i>
                         <span id="verificationImageName">Enviar uma foto para confirmação de identidade *</span>
@@ -622,7 +638,6 @@
         </div>
     </div>
     
-    <!-- Novo: Modal de Administração Secreta -->
     <div id="adminModal" class="fixed inset-0 z-60 bg-black hidden flex flex-col h-screen">
         <header class="w-full flex justify-between items-center py-4 px-4 sticky top-0 bg-black z-10">
             <button id="backFromAdminPage" class="p-2 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-colors">
@@ -656,6 +671,7 @@
         <img id="lightboxImage" src="" class="max-w-[90vw] max-h-[90vh] object-contain">
     </div>
 
+    <!-- CORREÇÃO: Adicionado scrolling-container para rolagem -->
     <div id="followersModal" class="fixed inset-0 z-[70] bg-black bg-opacity-90 hidden flex items-center justify-center">
         <div class="w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 bg-black rounded-2xl p-6 shadow-2xl flex flex-col space-y-4 border border-white border-opacity-20 max-h-[80vh]">
             <div class="flex justify-between items-center">
@@ -669,7 +685,6 @@
         </div>
     </div>
 
-    <!-- Novo: Modal de Confirmação para Descartar Post -->
     <div id="discardPostModal" class="fixed inset-0 z-[70] bg-black bg-opacity-90 hidden flex items-center justify-center">
         <div class="bg-black rounded-2xl p-6 w-11/12 sm:w-1/2 md:w-1/3 lg:w-1/4 flex flex-col items-center text-center space-y-4 border border-white border-opacity-20">
             <p class="text-lg font-semibold">Descartar postagem?</p>
@@ -682,7 +697,6 @@
         </div>
     </div>
 
-    <!-- Novo: Modal de Escolha de Ação de Perfil -->
     <div id="profileActionModal" class="fixed inset-0 z-[70] bg-black bg-opacity-90 hidden flex items-center justify-center">
         <div class="bg-black rounded-2xl p-6 w-11/12 sm:w-1/2 md:w-1/3 lg:w-1/4 flex flex-col items-center text-center space-y-4 border border-white border-opacity-20">
             <p class="text-lg font-semibold">O que você quer ver?</p>
@@ -693,6 +707,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Feedback Toast for Copying Links -->
+    <div id="copyFeedback" class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-green-500 text-white text-sm px-4 py-2 rounded-full hidden z-[100]">Link copiado!</div>
 
 
     <script type="module">
@@ -731,7 +748,6 @@
             writeBatch,
             getCountFromServer
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
         
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -749,7 +765,7 @@
         const imgbbApiKey = "9a792281a6220ed358215ad0c1e4162e";
         const verificationSealUrl = 'https://img.icons8.com/?size=512&id=2sZ0sdlG9kWP&format=png';
 
-        let app, db, auth, storage;
+        let app, db, auth;
         
         // DOM elements
         const mainHeader = document.getElementById('mainHeader');
@@ -781,7 +797,6 @@
         const postLimitMessage = document.getElementById('postLimitMessage');
 
         const feed = document.getElementById('feed');
-        const initialLoading = document.getElementById('initialLoading');
         const loadMoreIndicator = document.getElementById('loadMoreIndicator');
         const feedEndMessage = document.getElementById('feed-end-message');
 
@@ -840,8 +855,6 @@
         const loggedInButtons = document.getElementById('loggedInButtons');
         const loginSignupButton = document.getElementById('loginSignupButton');
         const logoutButton = document.getElementById('logoutButton');
-        const changePasswordButton = document.getElementById('changePasswordButton');
-        const deleteProfileButton = document.getElementById('deleteProfileButton');
         const authModal = document.getElementById('authModal');
         const closeAuthModal = document.getElementById('closeAuthModal');
         const authModalTitle = document.getElementById('authModalTitle');
@@ -861,7 +874,14 @@
         const confirmDeleteProfile = document.getElementById('confirmDeleteProfile');
         const cancelDeleteProfile = document.getElementById('cancelDeleteProfile');
 
-        const editProfileCardButton = document.getElementById('editProfileCardButton');
+        // Settings Modal (Refactored)
+        const settingsButton = document.getElementById('settingsButton');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeSettingsModal = document.getElementById('closeSettingsModal');
+        const changePasswordButton = settingsModal.querySelector('#changePasswordButton');
+        const deleteProfileButton = settingsModal.querySelector('#deleteProfileButton');
+        const editProfileCardButton = settingsModal.querySelector('#editProfileCardButton');
+
         const profileCardPage = document.getElementById('profileCardPage');
         const closeProfileCardPage = document.getElementById('closeProfileCardPage');
         const cardHeaderImage = document.getElementById('cardHeaderImage');
@@ -870,13 +890,6 @@
         const cardProfileName = document.getElementById('cardProfileName');
         const cardUsernameTop = document.getElementById('cardUsernameTop');
         const cardBio = document.getElementById('cardBio');
-        const cardPronouns = document.getElementById('cardPronouns');
-        const cardGender = document.getElementById('cardGender');
-        const cardSexuality = document.getElementById('cardSexuality');
-        const cardAge = document.getElementById('cardAge');
-        const cardZodiac = document.getElementById('cardZodiac');
-        const cardRelationshipStatus = document.getElementById('cardRelationshipStatus');
-        const cardPersonality = document.getElementById('cardPersonality');
         const socialLinksContainer = document.getElementById('socialLinksContainer');
         const followerCount = document.getElementById('followerCount');
         const postCount = document.getElementById('postCount');
@@ -909,6 +922,17 @@
         const cardFeedContent = document.getElementById('cardFeedContent'); 
         const cardPostsContent = document.getElementById('cardPostsContent'); 
 
+        // About Button (Refactored)
+        const aboutButton = document.getElementById('aboutButton');
+        const aboutDetails = document.getElementById('aboutDetails');
+        const cardPronouns = document.getElementById('cardPronouns');
+        const cardGender = document.getElementById('cardGender');
+        const cardSexuality = document.getElementById('cardSexuality');
+        const cardAge = document.getElementById('cardAge');
+        const cardZodiac = document.getElementById('cardZodiac');
+        const cardRelationshipStatus = document.getElementById('cardRelationshipStatus');
+        const cardPersonality = document.getElementById('cardPersonality');
+
         const newPostNotification = document.getElementById('newPostNotification');
         const showNewPostsBtn = document.getElementById('showNewPostsBtn');
         
@@ -916,12 +940,11 @@
         const closeDraftsModal = document.getElementById('closeDraftsModal');
         const draftsList = document.getElementById('draftsList');
 
-        // Verification Page Elements
         const verificationButton = document.getElementById('verificationButton');
         const verificationPage = document.getElementById('verificationPage');
         const backFromVerificationPage = document.getElementById('backFromVerificationPage');
         const verificationFormContainer = document.getElementById('verificationFormContainer');
-        const verificationStatusMessage = document.getElementById('verificationStatusMessage'); // Updated ID
+        const verificationStatusMessage = document.getElementById('verificationStatusMessage');
         const submitVerificationRequest = document.getElementById('submitVerificationRequest');
         const verificationCodeInput = document.getElementById('verificationCodeInput');
         const submitVerificationCode = document.getElementById('submitVerificationCode');
@@ -934,12 +957,10 @@
         const acceptBadgeButton = document.getElementById('acceptBadgeButton');
 
 
-        // Lightbox Modal
         const lightboxModal = document.getElementById('lightboxModal');
         const lightboxImage = document.getElementById('lightboxImage');
         const closeLightbox = document.getElementById('closeLightbox');
 
-        // Followers Modal
         const followersModal = document.getElementById('followersModal');
         const followersModalTitle = document.getElementById('followersModalTitle');
         const closeFollowersModal = document.getElementById('closeFollowersModal');
@@ -947,7 +968,6 @@
         const followersButton = document.getElementById('followersButton');
         const backToTopBtn = document.getElementById('backToTopBtn');
 
-        // New Modals
         const discardPostModal = document.getElementById('discardPostModal');
         const confirmDiscard = document.getElementById('confirmDiscard');
         const saveDraftAndClose = document.getElementById('saveDraftAndClose');
@@ -957,13 +977,12 @@
         const viewProfileCard = document.getElementById('viewProfileCard');
         const cancelProfileAction = document.getElementById('cancelProfileAction');
 
-        // Admin Modal elements
         const adminModal = document.getElementById('adminModal');
         const backFromAdminPage = document.getElementById('backFromAdminPage');
         const pendingRequestsList = document.getElementById('pendingRequestsList');
         const verifiedUsersList = document.getElementById('verifiedUsersList');
         const refreshAdminData = document.getElementById('refreshAdminData');
-        const ADMIN_UID = 'ArPXYRr8biPpbWOYoWCzlWOloMO2'; // UID do admin
+        const ADMIN_UID = 'ArPXYRr8biPpbWOYoWCzlWOloMO2';
 
         // State variables
         let userId = null;
@@ -971,7 +990,6 @@
         let currentUserProfile = null;
         let currentTab = 'feed';
         let postSubscription = null;
-        let deletingPostId = null;
         let editingPostId = null;
         let editingDraftId = null;
         let editingComment = null;
@@ -991,9 +1009,8 @@
         let isLoadingPosts = false;
         let allPostsLoaded = false;
         let isSearching = false;
-        let searchMode = 'posts'; // 'posts' or 'users'
+        let searchMode = 'posts';
 
-        // Centralized listener management for the profile card page
         const commentListeners = new Map();
         const cardPageListeners = new Map(); 
         const userProfileCache = new Map();
@@ -1047,11 +1064,9 @@
             }
         };
 
-        // Função para forçar a atualização da UI após mudanças no selo de verificação
         const updateAllUiWithProfileChange = async (targetUserId) => {
             userProfileCache.delete(targetUserId);
             
-            // Recarrega o feed principal
             const collectionToLoad = currentTab === 'feed' ? 'posts' : 'anonymous_posts';
             if (currentTab !== 'trending_posts') {
                 if(userId) loadPosts(collectionToLoad, false);
@@ -1059,12 +1074,10 @@
                 if(userId) loadTrendingPosts();
             }
 
-            // Recarrega o perfil do usuário atual se o selo for alterado
             if(targetUserId === userId) {
                 await fetchUserProfile(userId);
             }
 
-            // Encontra e atualiza todos os posts já renderizados
             document.querySelectorAll(`[data-user-id="${targetUserId}"]`).forEach(async (el) => {
                 const postId = el.dataset.postId;
                 if (postId) {
@@ -1084,7 +1097,7 @@
             postElement.dataset.postId = post.id;
             postElement.dataset.isAnonymous = post.isAnonymous === true;
             postElement.dataset.userId = post.userId || 'anonimo';
-            postElement.classList.add('post-element-class'); // Adiciona classe para fácil seleção
+            postElement.classList.add('post-element-class');
 
             const timestamp = post.timestamp?.seconds ? new Date(post.timestamp.seconds * 1000) : new Date();
             const timeString = timestamp.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
@@ -1127,7 +1140,12 @@
 
             const likesCount = post.likesCount || 0;
             const commentsCount = post.commentsCount || 0;
-            const postImageHtml = post.postImage ? `<img src="${post.postImage}" alt="Post Image" class="mt-4 rounded-lg w-full object-cover cursor-pointer post-image-clickable">` : '';
+            // CORREÇÃO: Imagem do post com tamanho limitado
+            const postImageHtml = post.postImage ? `
+                <div class="mt-4 rounded-lg w-full max-h-96 overflow-hidden flex justify-center items-center bg-black">
+                    <img src="${post.postImage}" alt="Post Image" class="w-full h-full object-contain cursor-pointer post-image-clickable">
+                </div>
+            ` : '';
             const canManagePost = isMyPost && !isAnonymousPost && isRegisteredUser;
             const postLinkHtml = post.link ? `<a href="${post.link.startsWith('http') ? post.link : '//' + post.link}" target="_blank" rel="noopener noreferrer" class="mt-3 inline-block bg-white bg-opacity-10 text-white text-sm font-semibold py-2 px-4 rounded-lg hover:bg-opacity-20 transition-colors"><i class="fas fa-link mr-2"></i>Visitar Link</a>` : '';
             const commentInputAreaHtml = isRegisteredUser ? `
@@ -1227,7 +1245,7 @@
 
                 const userPublicData = publicDocSnap.exists() ? publicDocSnap.data() : {};
                 currentUserProfile = { ...userPrivateData, ...userPublicData };
-                userProfileCache.set(uid, { ...userPrivateData, ...userPublicData }); // Update cache with merged data
+                userProfileCache.set(uid, { ...userPrivateData, ...userPublicData });
 
                 updateProfileUI(currentUserProfile);
             } catch (error) {
@@ -1252,11 +1270,13 @@
         };
         
         const resetProfileUI = () => {
-             profileNameDisplay.textContent = 'Visitante';
-                profileImage.classList.add('hidden');
-                profilePlaceholder.classList.remove('hidden');
-                userIdDisplay.textContent = 'N/A';
-                currentUserProfile = null;
+             // CORREÇÃO: Limpa completamente a UI do perfil
+             profileNameDisplay.innerHTML = 'Visitante';
+             profileImage.src = '';
+             profileImage.classList.add('hidden');
+             profilePlaceholder.classList.remove('hidden');
+             userIdDisplay.textContent = 'N/A';
+             currentUserProfile = null;
         };
 
         const showSkeletonLoaders = (container = feed) => {
@@ -1303,7 +1323,7 @@
                 let finalDocs = [];
                 if (searchQuery) {
                     isSearching = true;
-                    allPostsLoaded = true; // No pagination for search
+                    allPostsLoaded = true;
                     const postsCollectionRef = collection(db, `artifacts/${appId}/public/data/${collectionName}`);
                     const normalizedSearch = searchQuery.toLowerCase();
                     
@@ -1479,7 +1499,6 @@
         const updateUIForAuthState = (user) => {
             isRegisteredUser = user && !user.isAnonymous;
             postFab.style.display = isRegisteredUser ? 'flex' : 'none';
-            // CORREÇÃO: Esconde/mostra o botão de notificação
             notificationButton.classList.toggle('hidden', !isRegisteredUser);
 
             if (isRegisteredUser) {
@@ -1489,12 +1508,8 @@
             } else {
                 loggedInButtons.classList.add('hidden');
                 loginSignupButton.classList.remove('hidden');
-                if (user && user.isAnonymous) {
-                    profileNameDisplay.textContent = 'Anônimo';
-                    userIdDisplay.textContent = user.uid.substring(0, 8) + '...';
-                } else {
-                    resetProfileUI();
-                }
+                // CORREÇÃO: Chama resetProfileUI para limpar o menu lateral no logout
+                resetProfileUI(); 
             }
         };
         
@@ -1503,7 +1518,6 @@
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-                storage = getStorage(app);
             } catch (e) {
                 console.error("Erro ao inicializar Firebase. Verifique a configuração.", e);
                 document.getElementById('app-container').classList.add('hidden');
@@ -1550,6 +1564,8 @@
                     try { await signInAnonymously(auth); } catch (error) { console.error("Erro ao fazer login anônimo:", error); }
                 }
                 switchTab('feed');
+                // CORREÇÃO: Processar links diretos após a autenticação
+                handleDirectLinks();
             });
             feed.addEventListener('scroll', () => {
                 if (currentTab === 'trending_posts') return;
@@ -1652,7 +1668,7 @@
                     searchModal.classList.add('hidden'); 
                 } else if (searchTerm === '') {
                     const collectionToSearch = currentTab === 'anonymous' ? 'anonymous_posts' : 'posts';
-                    if(userId) loadPosts(collectionToLoad, false, '');
+                    if(userId) loadPosts(collectionToSearch, false, '');
                 }
             } else { // User search
                 searchDebounce = setTimeout(() => {
@@ -1727,15 +1743,14 @@
             postUploadProgress.classList.add('hidden');
             postImagePreviewContainer.classList.add('hidden');
             postImagePreview.src = '';
-            editingDraftId = null; // Reset draft ID
+            editingDraftId = null;
             if (autoSaveInterval) clearInterval(autoSaveInterval);
         };
 
         postFab.addEventListener('click', () => {
-            editingDraftId = null; // Ensure it's a new post
+            editingDraftId = null;
             postModal.classList.remove('hidden');
-            // Start auto-save
-            autoSaveInterval = setInterval(() => handlePostSubmission(true, true), 10000); // Save every 10 seconds
+            autoSaveInterval = setInterval(() => handlePostSubmission(true, true), 10000);
         });
         
         closePostModal.addEventListener('click', () => {
@@ -1782,7 +1797,7 @@
                         ? doc(db, `artifacts/${appId}/users/${userId}/drafts/${editingDraftId}`)
                         : doc(collection(db, `artifacts/${appId}/users/${userId}/drafts`));
                     await setDoc(draftRef, draftData, { merge: true });
-                    if (!editingDraftId) editingDraftId = draftRef.id; // Set ID for subsequent auto-saves
+                    if (!editingDraftId) editingDraftId = draftRef.id;
                 } else {
                     const isAnonymousPost = currentTab === 'anonymous';
                     const collectionName = isAnonymousPost ? 'anonymous_posts' : 'posts';
@@ -1797,7 +1812,6 @@
                     const newPostElement = await createPostElement({id: newPostRef.id, ...postData, timestamp: new Date()});
                     feed.insertBefore(newPostElement, feed.firstChild);
                     renderedPostIds.add(newPostRef.id);
-                    // If it was a draft, delete it
                     if (editingDraftId) {
                         await deleteDoc(doc(db, `artifacts/${appId}/users/${userId}/drafts/${editingDraftId}`));
                     }
@@ -1897,7 +1911,6 @@
                 profileUploadProgress.classList.remove('hidden');
                 profileUploadProgress.textContent = "Salvando perfil...";
 
-                // Validate username
                 if (username) {
                     const profilesRef = collection(db, `artifacts/${appId}/public/data/profiles`);
                     const q = query(profilesRef, where('username', '==', username));
@@ -1931,7 +1944,6 @@
                 currentUserProfile = { ...currentUserProfile, ...newPrivateProfile, ...newPublicProfile };
                 updateProfileUI(currentUserProfile);
                 
-                // CORREÇÃO: Atualiza os posts do usuário com a nova foto/nome
                 const postsRef = collection(db, `artifacts/${appId}/public/data/posts`);
                 const userPostsQuery = query(postsRef, where('userId', '==', userId));
                 const userPostsSnap = await getDocs(userPostsQuery);
@@ -2008,39 +2020,6 @@
                 deleteConfirmationModal.classList.add('hidden');
             };
         });
-        changePasswordButton.addEventListener('click', () => { changePasswordModal.classList.remove('hidden'); closeMenu(); });
-        closeChangePasswordModal.addEventListener('click', () => changePasswordModal.classList.add('hidden'));
-        saveNewPassword.addEventListener('click', async () => {
-            const newPassword = newPasswordInput.value;
-            if (newPassword.length < 6) {
-                changePasswordMessage.textContent = "A senha deve ter pelo menos 6 caracteres.";
-                changePasswordMessage.className = 'text-sm text-center p-2 rounded-lg text-red-400 bg-red-500 bg-opacity-10';
-                return;
-            }
-            try {
-                await updatePassword(auth.currentUser, newPassword);
-                changePasswordMessage.textContent = "Senha alterada com sucesso!";
-                changePasswordMessage.className = 'text-sm text-center p-2 rounded-lg text-green-400 bg-green-500 bg-opacity-10';
-                setTimeout(() => changePasswordModal.classList.add('hidden'), 2000);
-            } catch (error) {
-                console.error("Erro ao trocar senha:", error);
-                changePasswordMessage.textContent = "Erro ao alterar. Tente fazer login novamente.";
-                changePasswordMessage.className = 'text-sm text-center p-2 rounded-lg text-red-400 bg-red-500 bg-opacity-10';
-            }
-        });
-        deleteProfileButton.addEventListener('click', () => { 
-            confirmationModalText.textContent = "Esta ação é irreversível e todos os seus dados e postagens serão apagados permanentemente.";
-            deleteConfirmationModal.classList.remove('hidden');
-            confirmationCallback = async () => {
-                try { 
-                    await deleteUser(auth.currentUser); 
-                    deleteConfirmationModal.classList.add('hidden'); 
-                } catch (error) { 
-                    console.error("Erro ao excluir perfil:", error); 
-                }
-            };
-            closeMenu(); 
-        });
         
         confirmDeleteBtn.addEventListener('click', () => {
             if (confirmationCallback) {
@@ -2057,14 +2036,12 @@
             const target = e.target;
             if (!target) return;
 
-            // Handle lightbox click for post images
             if(target.classList.contains('post-image-clickable')) {
                 lightboxImage.src = target.src;
                 lightboxModal.style.display = 'flex';
                 return;
             }
             
-            // Handle profile avatar click
             if(target.classList.contains('profile-avatar')) {
                 profileActionData.userId = target.dataset.userId;
                 profileActionData.avatarUrl = target.dataset.avatarUrl;
@@ -2233,7 +2210,7 @@
                     if (newImageFile) {
                         newImageUrl = await uploadImageToImgBB(newImageFile);
                     } else if (!editPostImageContainer.classList.contains('hidden') && !editPostImagePreview.src) {
-                        newImageUrl = null; // Image was removed
+                        newImageUrl = null;
                     }
 
                     await updateDoc(postRef, { 
@@ -2269,7 +2246,6 @@
 
         // --- PROFILE CARD PAGE LOGIC ---
         const loadUserPosts = (profileOwnerId) => {
-            // Detach any existing posts listener
             if (cardPageListeners.has('posts')) {
                 cardPageListeners.get('posts')();
             }
@@ -2280,7 +2256,6 @@
 
             try {
                 const postsRef = collection(db, `artifacts/${appId}/public/data/posts`);
-                // CORREÇÃO: Removido orderBy para evitar erro de índice. A ordenação será feita no cliente.
                 const q = query(postsRef, where('userId', '==', profileOwnerId));
 
                 const unsubscribe = onSnapshot(q, async (snapshot) => {
@@ -2288,12 +2263,11 @@
                     if (snapshot.empty) {
                         userPostsFeed.innerHTML = '<p class="text-center text-white text-opacity-50 py-8">Este usuário ainda não postou nada.</p>';
                     } else {
-                        // CORREÇÃO: Ordenar os documentos no cliente
                         const userPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                         userPosts.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
 
                         const postElements = await Promise.all(userPosts.map(postData => {
-                            return createPostElement(postData, true); // isForProfilePage = true
+                            return createPostElement(postData, true);
                         }));
                         postElements.forEach(postElement => userPostsFeed.appendChild(postElement));
                     }
@@ -2303,7 +2277,6 @@
                     userPostsFeed.innerHTML = '<p class="text-center text-red-400 py-8">Erro ao carregar posts.</p>';
                 });
 
-                // Store the new listener
                 cardPageListeners.set('posts', unsubscribe);
             } catch (error) {
                 console.error("Error setting up user posts listener:", error);
@@ -2312,7 +2285,6 @@
         };
         
         const openProfileCard = async (profileOwnerId) => {
-            // Clear any previous listeners before setting new ones
             for (const unsubscribe of cardPageListeners.values()) {
                 unsubscribe();
             }
@@ -2324,7 +2296,6 @@
             try {
                 const profileRef = doc(db, `artifacts/${appId}/public/data/profiles/${profileOwnerId}`);
                 
-                // Set up real-time listener for profile data (photos, info, etc.)
                 const unsubscribeProfile = onSnapshot(profileRef, async (docSnap) => {
                     const profileData = docSnap.exists() ? docSnap.data() : {};
                     
@@ -2340,16 +2311,23 @@
                     cardUsernameTop.textContent = profileData.username ? `@${profileData.username}` : (profileData.name || 'Usuário');
                     cardBio.textContent = profileData.bio || '';
                     
-                    // Optional fields
-                    cardPronouns.textContent = profileData.pronouns || '';
-                    cardGender.textContent = profileData.gender || '';
-                    cardSexuality.textContent = profileData.sexuality || '';
-                    cardAge.textContent = profileData.age ? `${profileData.age} anos` : '';
-                    cardZodiac.textContent = profileData.zodiac || '';
-                    cardRelationshipStatus.textContent = profileData.relationshipStatus || '';
-                    cardPersonality.textContent = profileData.personality || '';
+                    // CORREÇÃO: Preenche os detalhes do "Sobre"
+                    const setDetail = (element, label, value) => {
+                        if (value) {
+                            element.innerHTML = `<strong>${label}:</strong> ${value}`;
+                            element.classList.remove('hidden');
+                        } else {
+                            element.classList.add('hidden');
+                        }
+                    };
+                    setDetail(cardPronouns, 'Pronomes', profileData.pronouns);
+                    setDetail(cardGender, 'Gênero', profileData.gender);
+                    setDetail(cardSexuality, 'Sexualidade', profileData.sexuality);
+                    setDetail(cardAge, 'Idade', profileData.age ? `${profileData.age} anos` : '');
+                    setDetail(cardZodiac, 'Signo', profileData.zodiac);
+                    setDetail(cardRelationshipStatus, 'Status', profileData.relationshipStatus);
+                    setDetail(cardPersonality, 'Personalidade', profileData.personality);
                     
-                    // Social Links
                     socialLinksContainer.innerHTML = '';
                     if (profileData.instagram) {
                         socialLinksContainer.innerHTML += `<a href="https://instagram.com/${profileData.instagram}" target="_blank" class="text-2xl hover:text-pink-500"><i class="fab fa-instagram"></i></a>`;
@@ -2358,7 +2336,6 @@
                         socialLinksContainer.innerHTML += `<a href="https://tiktok.com/${profileData.tiktok}" target="_blank" class="text-2xl hover:text-white"><i class="fab fa-tiktok"></i></a>`;
                     }
 
-                    // Additional Photos
                     const photos = profileData.additionalPhotos || [];
                     const photosWrapper = document.getElementById('photosWrapper');
                     photosWrapper.innerHTML = '';
@@ -2378,7 +2355,6 @@
                         additionalPhotosContainer.classList.add('hidden');
                     }
 
-                    // Update follow button state
                     const shouldShowButton = isRegisteredUser && currentProfileCardOwnerId !== userId;
                     if (shouldShowButton) {
                         followButton.classList.remove('hidden');
@@ -2397,14 +2373,12 @@
                 });
                 cardPageListeners.set('profile', unsubscribeProfile);
 
-                // Setup follower count listener
                 const followerRef = collection(db, `artifacts/${appId}/users/${profileOwnerId}/followers`);
                 const unsubscribeFollower = onSnapshot(followerRef, (snapshot) => {
                     followerCount.textContent = snapshot.size;
                 }, (error) => console.error("Erro ao carregar seguidores:", error));
                 cardPageListeners.set('followers', unsubscribeFollower);
 
-                // Get post count once
                 const userPostsRef = collection(db, `artifacts/${appId}/public/data/posts`);
                 const userPostsQuery = query(userPostsRef, where('userId', '==', profileOwnerId));
                 const userPostsCountSnap = await getCountFromServer(userPostsQuery);
@@ -2412,7 +2386,6 @@
 
                 profileCardPage.classList.remove('hidden');
                 
-                // Show default tab
                 showCardTab('feed', profileOwnerId);
 
             } catch(error) { console.error("Erro ao carregar card de perfil:", error); }
@@ -2429,12 +2402,10 @@
                 cardFeedTab.classList.add('border-white', 'text-white');
                 cardFeedContent.classList.remove('hidden');
                 cardPostsContent.classList.add('hidden');
-                // The real-time listener on the profile will handle updating photos
             } else if (tabName === 'posts') {
                 cardPostsTab.classList.add('border-white', 'text-white');
                 cardPostsContent.classList.remove('hidden');
                 cardFeedContent.classList.add('hidden');
-                // This will setup the real-time listener for posts
                 loadUserPosts(profileOwnerId);
             }
         };
@@ -2454,7 +2425,6 @@
         closeProfileCardPage.addEventListener('click', () => {
             profileCardPage.classList.add('hidden');
             
-            // CORREÇÃO: Detach all listeners associated with this card page view
             for (const unsubscribe of cardPageListeners.values()) {
                 unsubscribe();
             }
@@ -2462,7 +2432,7 @@
 
             currentProfileCardOwnerId = null;
             userPostsFeed.innerHTML = '';
-            cardFeedContent.classList.remove('hidden'); // Reset to default tab
+            cardFeedContent.classList.remove('hidden');
             cardPostsContent.classList.add('hidden');
         });
         
@@ -2479,11 +2449,9 @@
                 if (followingSnap.exists()) {
                     await deleteDoc(followingRef);
                     await deleteDoc(followerRef);
-                    // UI will update via the onSnapshot listener
                 } else {
                     await setDoc(followingRef, { timestamp: serverTimestamp() });
                     await setDoc(followerRef, { timestamp: serverTimestamp() });
-                    // UI will update via the onSnapshot listener
                 }
             } catch (error) {
                 console.error("Erro ao seguir/parar de seguir:", error);
@@ -2541,10 +2509,11 @@
              const profileLink = e.target.closest('.follower-profile-link');
             if (profileLink) {
                 const profileOwnerId = profileLink.dataset.userId;
-                if (profileOwnerId) openProfileCard(profileOwnerId);
-                followersModal.classList.add('hidden');
-                closeProfileCardPage.click(); // Close current card before opening new one
-                setTimeout(() => openProfileCard(profileOwnerId), 100); // Small delay for smoother transition
+                if (profileOwnerId) {
+                    followersModal.classList.add('hidden');
+                    closeProfileCardPage.click();
+                    setTimeout(() => openProfileCard(profileOwnerId), 100);
+                }
             }
         });
 
@@ -2568,7 +2537,6 @@
                 editCardInstagram.value = profileCardData.instagram || '';
                 editCardTiktok.value = profileCardData.tiktok || '';
 
-                // Pre-fill additional photos
                 const photosGrid = document.getElementById('editCardPhotosGrid');
                 photosGrid.innerHTML = '';
                 const photoLimit = profileCardData.isVerified ? 9 : 3;
@@ -2601,7 +2569,7 @@
                         previewElement.src = event.target.result;
                         previewElement.classList.remove('hidden');
                         if (previewId.startsWith('photoPreview')) {
-                            previewElement.nextElementSibling.classList.add('hidden'); // Hide the plus icon
+                            previewElement.nextElementSibling.classList.add('hidden');
                         }
                     };
                     reader.readAsDataURL(file); 
@@ -2631,11 +2599,9 @@
                 const uploadPromises = [];
                 const photoInputs = document.querySelectorAll('#editCardPhotosGrid input[type="file"]');
                 
-                // Header and Profile images
                 if (editCardHeaderFile.files[0]) uploadPromises.push(uploadImageToImgBB(editCardHeaderFile.files[0])); else uploadPromises.push(Promise.resolve(currentCardData.headerImage));
                 if (editCardProfileFile.files[0]) uploadPromises.push(uploadImageToImgBB(editCardProfileFile.files[0])); else uploadPromises.push(Promise.resolve(currentCardData.profileCardImage));
                 
-                // Additional photos
                 const existingPhotos = currentCardData.additionalPhotos || [];
                 photoInputs.forEach((input, i) => {
                     if (input.files[0]) {
@@ -2660,7 +2626,7 @@
                     tiktok: editCardTiktok.value.trim() || null,
                     headerImage: uploadedUrls[0] || null,
                     profileCardImage: uploadedUrls[1] || null,
-                    additionalPhotos: uploadedUrls.slice(2).filter(url => url), // Remove nulls
+                    additionalPhotos: uploadedUrls.slice(2).filter(url => url),
                     userId,
                 };
 
@@ -2689,11 +2655,74 @@
             feed.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        copyUidButton.addEventListener('click', () => {
+        // CORREÇÃO: Lógica para copiar links únicos
+        const copyToClipboard = (text) => {
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
             document.execCommand('copy');
-            copyFeedback.classList.remove('hidden');
-            setTimeout(() => copyFeedback.classList.add('hidden'), 1500);
+            document.body.removeChild(tempInput);
+
+            const feedbackToast = document.getElementById('copyFeedback');
+            feedbackToast.classList.remove('hidden');
+            setTimeout(() => feedbackToast.classList.add('hidden'), 2000);
+        };
+
+        shareProfileButton.addEventListener('click', () => {
+            if (currentProfileCardOwnerId) {
+                const url = `${window.location.origin}${window.location.pathname}?user=${currentProfileCardOwnerId}`;
+                copyToClipboard(url);
+            }
         });
+
+        document.body.addEventListener('click', (e) => {
+            const shareBtn = e.target.closest('.share-post-btn');
+            if (shareBtn) {
+                const postId = shareBtn.dataset.id;
+                const url = `${window.location.origin}${window.location.pathname}?post=${postId}`;
+                copyToClipboard(url);
+            }
+        });
+
+        const handleDirectLinks = async () => {
+            const params = new URLSearchParams(window.location.search);
+            const userIdParam = params.get('user');
+            const postIdParam = params.get('post');
+
+            if (userIdParam) {
+                openProfileCard(userIdParam);
+            } else if (postIdParam) {
+                // Tenta encontrar o post em ambas as coleções
+                let postDoc;
+                let isAnon = false;
+                try {
+                    postDoc = await getDoc(doc(db, `artifacts/${appId}/public/data/posts/${postIdParam}`));
+                    if (!postDoc.exists()) {
+                        postDoc = await getDoc(doc(db, `artifacts/${appId}/public/data/anonymous_posts/${postIdParam}`));
+                        isAnon = true;
+                    }
+                } catch (e) { console.error("Error finding shared post", e); }
+                
+                if (postDoc && postDoc.exists()) {
+                    const targetTab = isAnon ? 'anonymous' : 'feed';
+                    if (currentTab !== targetTab) {
+                        switchTab(targetTab);
+                    }
+                    // Aguarda o feed carregar e então rola para o post
+                    setTimeout(() => {
+                        const postElement = document.querySelector(`[data-post-id="${postIdParam}"]`);
+                        if (postElement) {
+                            postElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            postElement.style.boxShadow = '0 0 15px rgba(255, 255, 255, 0.5)';
+                            setTimeout(() => { postElement.style.boxShadow = ''; }, 2000);
+                        }
+                    }, 1000); // Delay to allow posts to render
+                }
+            }
+        };
+
+        // --- FIM DA LÓGICA DE LINKS ÚNICOS ---
 
         // Drafts functionality
         draftsButton.addEventListener('click', async () => {
@@ -2774,7 +2803,6 @@
             verificationPage.classList.add('hidden');
         });
 
-        // Event listener for verification image file preview
         verificationImageFile.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
@@ -2793,7 +2821,6 @@
         });
 
 
-        // Handle submission of verification request
         submitVerificationRequest.addEventListener('click', async () => {
             const name = document.getElementById('verificationName').value.trim();
             const age = document.getElementById('verificationAge').value.trim();
@@ -2803,15 +2830,15 @@
 
             if (!name || !age || !whatsapp || !reason || !imageFile) {
                  const customAlert = document.createElement('div');
-                 customAlert.className = 'fixed inset-0 z-[100] bg-black bg-opacity-90 flex items-center justify-center';
-                 customAlert.innerHTML = `
-                     <div class="bg-black rounded-2xl p-6 w-11/12 sm:w-1/2 md:w-1/3 lg:w-1/4 flex flex-col items-center text-center space-y-4 border border-white border-opacity-20">
-                         <p class="text-lg font-semibold">Preencha todos os campos obrigatórios (*).</p>
-                         <button class="w-1/2 bg-white text-black py-2 rounded-xl transition-all hover:bg-white hover:bg-opacity-80 active:scale-95" onclick="this.closest('.fixed').remove()">OK</button>
-                     </div>
-                 `;
-                 document.body.appendChild(customAlert);
-                 return;
+                  customAlert.className = 'fixed inset-0 z-[100] bg-black bg-opacity-90 flex items-center justify-center';
+                  customAlert.innerHTML = `
+                       <div class="bg-black rounded-2xl p-6 w-11/12 sm:w-1/2 md:w-1/3 lg:w-1/4 flex flex-col items-center text-center space-y-4 border border-white border-opacity-20">
+                           <p class="text-lg font-semibold">Preencha todos os campos obrigatórios (*).</p>
+                           <button class="w-1/2 bg-white text-black py-2 rounded-xl transition-all hover:bg-white hover:bg-opacity-80 active:scale-95" onclick="this.closest('.fixed').remove()">OK</button>
+                       </div>
+                  `;
+                  document.body.appendChild(customAlert);
+                  return;
             }
 
             showSpinner(submitVerificationRequest);
@@ -2853,21 +2880,16 @@
             }
         });
 
-        // Function to check and display user's verification status
         const checkVerificationStatus = () => {
-             // CORREÇÃO: Apenas para usuários registrados
-             if (!isRegisteredUser || !userId) {
+              if (!isRegisteredUser || !userId) {
                 verificationPage.classList.add('hidden');
                 return;
             }
 
             const requestsRef = collection(db, `artifacts/${appId}/public/data/verificationRequests`);
-            // Fix: Removed orderBy and limit to avoid index error. Sorting is now done in memory.
             const q = query(requestsRef, where('userId', '==', userId));
 
-            // Use onSnapshot for real-time updates
             onSnapshot(q, async (snapshot) => {
-                // Sort documents to find the latest one
                 const sortedDocs = snapshot.docs.sort((a, b) => (b.data().timestamp?.toMillis() || 0) - (a.data().timestamp?.toMillis() || 0));
                 const requestDoc = sortedDocs[0];
 
@@ -2885,13 +2907,11 @@
                         case 'approved':
                             message = 'Sua solicitação foi aprovada! Você já possui o selo de verificação.';
                             colorClass = 'bg-green-500 bg-opacity-10 text-green-400';
-                            // CORREÇÃO: Reshow form after approval to allow sending a new request later if needed
                             verificationFormContainer.classList.remove('hidden');
                             break;
                         case 'rejected':
                             message = 'Sua solicitação foi recusada. Você pode enviar uma nova solicitação.';
                             colorClass = 'bg-red-500 bg-opacity-10 text-red-400';
-                            // Re-show form for new submission
                             verificationFormContainer.classList.remove('hidden');
                             break;
                         default:
@@ -2910,7 +2930,6 @@
             });
         };
 
-        // Admin Panel Logic
         const loadAdminPanel = () => {
             adminModal.classList.remove('hidden');
             showMainApp(false);
@@ -2918,7 +2937,6 @@
             pendingRequestsList.innerHTML = '<p class="text-center text-white text-opacity-50">Carregando...</p>';
             verifiedUsersList.innerHTML = '<p class="text-center text-white text-opacity-50">Carregando...</p>';
 
-            // CORREÇÃO: Uso de onSnapshot para atualização em tempo real
             if (pendingRequestsListener) pendingRequestsListener();
             const pendingRequestsRef = collection(db, `artifacts/${appId}/public/data/verificationRequests`);
             const pendingQ = query(pendingRequestsRef, where('status', '==', 'pending'));
@@ -2957,7 +2975,6 @@
             });
             pendingRequestsListener = unsubscribePending;
 
-            // CORREÇÃO: Uso de onSnapshot para atualização em tempo real
             if (verifiedUsersListener) verifiedUsersListener();
             const verifiedUsersRef = collection(db, `artifacts/${appId}/public/data/profiles`);
             const verifiedQ = query(verifiedUsersRef, where('isVerified', '==', true));
@@ -2988,7 +3005,6 @@
             verifiedUsersListener = unsubscribeVerified;
         };
 
-        // Event listener for verification code and admin access
         submitVerificationCode.addEventListener('click', async () => {
             const code = verificationCodeInput.value.trim();
             if (code === 'ADMIN' && userId === ADMIN_UID) {
@@ -3002,8 +3018,8 @@
                      await setDoc(profileRef, { isVerified: true }, { merge: true });
                      verificationCodeFeedback.textContent = "Parabéns! Você foi verificado.";
                      verificationCodeFeedback.className = "text-center text-sm mt-3 h-4 text-green-400";
-                     await fetchUserProfile(userId); // Refresh profile data
-                     updateAllUiWithProfileChange(userId); // Atualiza UI
+                     await fetchUserProfile(userId);
+                     updateAllUiWithProfileChange(userId);
                  } catch (error) {
                      console.error("Erro ao aplicar selo:", error);
                      verificationCodeFeedback.textContent = "Erro ao aplicar o selo.";
@@ -3016,7 +3032,6 @@
             setTimeout(() => { verificationCodeFeedback.textContent = ''; }, 3000);
         });
         
-        // Event listeners for Admin Panel
         backFromAdminPage.addEventListener('click', () => {
             adminModal.classList.add('hidden');
             showMainApp(true);
@@ -3024,7 +3039,6 @@
             if (verifiedUsersListener) verifiedUsersListener();
         });
         
-        // Botão de atualização manual (mantido, mas a atualização é automática)
         refreshAdminData.addEventListener('click', () => {
             if (userId === ADMIN_UID) {
                 loadAdminPanel();
@@ -3058,7 +3072,6 @@
                             timestamp: serverTimestamp(),
                             message: 'Sua solicitação de verificação foi aprovada! Clique para aceitar o selo.'
                         });
-                        // Forçar a atualização do painel do admin para remover a solicitação pendente
                         loadAdminPanel();
                     }
                 } catch (error) {
@@ -3074,8 +3087,8 @@
                     const profileRef = doc(db, `artifacts/${appId}/public/data/profiles/${targetUserId}`);
                     try {
                         await updateDoc(profileRef, { isVerified: false });
-                        updateAllUiWithProfileChange(targetUserId); // Força a atualização da UI
-                        loadAdminPanel(); // Força a atualização do painel do admin
+                        updateAllUiWithProfileChange(targetUserId);
+                        loadAdminPanel();
                     } catch (error) {
                         console.error("Erro ao remover selo:", error);
                     } finally {
@@ -3085,7 +3098,6 @@
             }
         });
 
-        // CORREÇÃO: Lógica do botão de notificação no header
         notificationButton.addEventListener('click', () => {
             if (isRegisteredUser) {
                 notificationModal.classList.remove('hidden');
@@ -3108,17 +3120,13 @@
             const notificationId = button.dataset.id;
             
             try {
-                // Remove a notificação do Firestore
                 await deleteDoc(doc(db, `artifacts/${appId}/users/${userId}/notifications/${notificationId}`));
                 
-                // Aplica o selo automaticamente
                 await setDoc(doc(db, `artifacts/${appId}/public/data/profiles/${userId}`), { isVerified: true }, { merge: true });
                 
-                // Força a atualização da UI
                 await fetchUserProfile(userId);
                 updateAllUiWithProfileChange(userId);
 
-                // Fecha o modal de notificações
                 notificationModal.classList.add('hidden');
             } catch (error) {
                 console.error("Erro ao aceitar o selo pela notificação:", error);
@@ -3126,17 +3134,14 @@
         });
 
 
-        // Lightbox Logic
         closeLightbox.addEventListener('click', () => {
             lightboxModal.style.display = 'none';
         });
         
-        // Back to Top Button
         backToTopBtn.addEventListener('click', () => {
             feed.scrollTo({ top: 0, behavior: 'smooth' });
         });
         
-        // Profile Action Modal Logic
         viewProfilePhoto.addEventListener('click', () => {
             lightboxImage.src = profileActionData.avatarUrl;
             lightboxModal.style.display = 'flex';
@@ -3150,6 +3155,38 @@
             profileActionModal.classList.add('hidden');
         });
 
+        // CORREÇÃO: Lógica do botão "Sobre" no card
+        aboutButton.addEventListener('click', () => {
+            aboutDetails.classList.toggle('hidden');
+            aboutButton.querySelector('i').classList.toggle('rotate-180');
+        });
+
+        // CORREÇÃO: Lógica do novo modal de Configurações
+        settingsButton.addEventListener('click', () => {
+            settingsModal.classList.remove('hidden');
+            closeMenu();
+        });
+        closeSettingsModal.addEventListener('click', () => {
+            settingsModal.classList.add('hidden');
+        });
+        changePasswordButton.addEventListener('click', () => { 
+            changePasswordModal.classList.remove('hidden'); 
+            settingsModal.classList.add('hidden');
+        });
+        deleteProfileButton.addEventListener('click', () => { 
+            confirmationModalText.textContent = "Esta ação é irreversível e todos os seus dados e postagens serão apagados permanentemente.";
+            deleteConfirmationModal.classList.remove('hidden');
+            confirmationCallback = async () => {
+                try { 
+                    await deleteUser(auth.currentUser); 
+                    deleteConfirmationModal.classList.add('hidden'); 
+                } catch (error) { 
+                    console.error("Erro ao excluir perfil:", error); 
+                }
+            };
+            settingsModal.classList.add('hidden');
+        });
+
 
         window.onload = startApp;
 
@@ -3157,5 +3194,3 @@
 
 </body>
 </html>
-
-
