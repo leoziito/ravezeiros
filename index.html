@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rave</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        /* CORREÇÃO: Layout de altura total para o corpo para corrigir problemas de rolagem */
         html, body {
             height: 100%;
             width: 100%;
-            overflow: hidden; /* Prevenir rolagem dupla */
+            overflow: hidden;
         }
         body {
             font-family: 'Inter', sans-serif;
@@ -42,13 +42,30 @@
         .online-indicator { width: 12px; height: 12px; background-color: #22c55e; border-radius: 50%; position: absolute; bottom: 0; right: 0; border: 2px solid #000; }
         .spinner { border: 2px solid #f3f3f3; border-top: 2px solid #3498db; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .post-highlight {
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
-            transition: box-shadow 1s ease-in-out;
+        
+        @keyframes shake-highlight {
+            0% { transform: translate(0, 0); box-shadow: 0 0 0 rgba(255, 255, 255, 0); }
+            10%, 30%, 50%, 70%, 90% { transform: translate(-2px, 0); }
+            20%, 40%, 60%, 80% { transform: translate(2px, 0); }
+            50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.7); }
+            100% { transform: translate(0, 0); box-shadow: 0 0 0 rgba(255, 255, 255, 0); }
+        }
+        .post-highlight-shake {
+            animation: shake-highlight 0.8s ease-in-out;
+        }
+
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 100;
         }
     </style>
 </head>
 <body class="bg-black text-white p-4">
+
+    <canvas id="particleCanvas"></canvas>
 
     <div id="initError" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center text-center p-4 hidden">
         <i class="fas fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
@@ -56,7 +73,6 @@
         <p class="text-white text-opacity-70">Não foi possível conectar ao servidor. Por favor, verifique sua conexão com a internet e tente novamente mais tarde.</p>
     </div>
 
-    <!-- CORREÇÃO: Removido o preenchimento do corpo, aplicado a seções individuais -->
     <header class="w-full flex justify-between items-center py-4 relative z-20 flex-shrink-0">
         <button id="profileButton" class="p-2 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-colors">
             <i class="fas fa-bars text-2xl"></i>
@@ -135,7 +151,7 @@
                     <button id="settingsButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
                         <i class="fas fa-cog mr-2"></i> Configurações
                     </button>
-                     <button id="logoutButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
+                    <button id="logoutButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
                         <i class="fas fa-sign-out-alt mr-2"></i> Sair
                     </button>
                 </div>
@@ -148,6 +164,13 @@
                     <i class="fas fa-gavel mr-2"></i> Regras do App
                 </button>
 
+                <!-- Nova seção Parcerias adicionada -->
+                <div id="partnershipsSection" class="w-full space-y-2 mt-4">
+                    <button id="partnershipsButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
+                        <i class="fas fa-handshake mr-2"></i> Parcerias
+                    </button>
+                </div>
+                
                 <div id="downloadAppSection" class="w-full space-y-2 mt-4">
                     <h3 class="text-sm font-semibold text-white text-center">Baixe o Rave</h3>
                     <a href="https://play.google.com/store/apps/details?id=com.wemesh.android&hl=pt" target="_blank" rel="noopener noreferrer" class="w-full bg-green-500 text-white font-semibold py-3 rounded-xl flex items-center justify-center transition-all hover:bg-green-600 active:scale-95">
@@ -272,6 +295,34 @@
         </div>
     </div>
 
+    <!-- Novo Modal de Parcerias -->
+    <div id="partnershipsModal" class="fixed inset-0 z-50 bg-black bg-opacity-90 hidden flex items-center justify-center">
+        <div class="w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 bg-black rounded-2xl p-6 shadow-2xl flex flex-col space-y-4 border border-white border-opacity-20 max-h-[80vh] overflow-y-auto scrolling-container">
+            <button id="closePartnershipsModal" class="absolute top-4 right-4 text-white hover:text-white transition-colors">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <h3 class="text-lg font-bold text-center">Parcerias</h3>
+            <div class="text-center text-sm text-white text-opacity-80 space-y-2">
+                <p>Nos envie sua proposta!</p>
+                <div class="flex items-center justify-center space-x-2">
+                    <p id="partnershipEmail" class="font-semibold">ravezzeiross@gmail.com</p>
+                    <button id="copyEmailButton" class="p-1 rounded-full text-white bg-white bg-opacity-10 hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-copy text-xs"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="w-full text-white text-opacity-70 space-y-3">
+                <p class="font-semibold text-white">Estamos abertos para propostas de:</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>Divulgação de redes sociais</li>
+                    <li>Links de salas no Rave</li>
+                    <li>Sites de filmes para o Rave</li>
+                    <li>Entre outros tipos de colaboração!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
 
     <div id="rulesModal" class="fixed inset-0 z-50 bg-black bg-opacity-90 transition-opacity duration-300 hidden flex items-center justify-center">
         <div class="relative w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 bg-black rounded-2xl p-6 flex flex-col space-y-4 border border-white border-opacity-20 max-h-[80vh] overflow-y-auto scrolling-container">
@@ -291,7 +342,6 @@
         </div>
     </div>
 
-    <!-- CORREÇÃO: Estrutura do contêiner principal para rolagem adequada -->
     <main id="app-container" class="w-full flex-grow flex flex-col items-center overflow-hidden relative">
         <div id="newPostNotification" class="w-full max-w-lg mt-4 hidden z-30 absolute top-0">
              <button id="showNewPostsBtn" class="w-full bg-white text-black font-semibold py-2 px-4 rounded-lg shadow-lg transition-transform hover:scale-105 active:scale-95">
@@ -343,6 +393,7 @@
             </label>
             <input id="postImageFile" type="file" accept="image/*,image/gif" class="hidden">
             <div id="postUploadProgress" class="text-center text-white text-opacity-50 text-sm hidden"></div>
+            <div id="postFileWarning" class="text-center text-xs text-yellow-400 hidden"></div>
             <div class="flex space-x-2">
                 <button id="saveDraft" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
                     Salvar Rascunho
@@ -374,6 +425,7 @@
                 <span>Trocar Imagem</span>
             </label>
             <input id="editPostImageFile" type="file" accept="image/*,image/gif" class="hidden">
+            <div id="editPostFileWarning" class="text-center text-xs text-yellow-400 hidden"></div>
             <button id="saveEditedPost" class="w-full bg-white text-black font-semibold py-3 rounded-xl transition-all hover:bg-white hover:bg-opacity-80 active:scale-95">
                 Salvar Alterações
             </button>
@@ -395,7 +447,6 @@
         </div>
     </div>
 
-    <!-- CORREÇÃO: Removido o cabeçalho fixo para permitir a rolagem de página inteira -->
     <div id="profileCardPage" class="fixed inset-0 z-[60] bg-black hidden overflow-y-auto scrolling-container w-screen p-4">
         <div class="max-w-lg mx-auto">
             <div class="flex justify-between items-center mb-4">
@@ -423,7 +474,6 @@
                 <p id="cardBio" class="text-sm text-white text-opacity-80 mt-3 break-words max-w-lg mx-auto"></p>
                 <div id="socialLinksContainer" class="flex justify-center items-center space-x-4 mt-4"></div>
                 
-                <!-- CORREÇÃO: Botão "Sobre" menor -->
                 <button id="aboutButton" class="mt-4 text-xs bg-white bg-opacity-10 text-white font-semibold py-1 px-3 rounded-full hover:bg-opacity-20 transition-colors">
                     Sobre <i class="fas fa-chevron-down ml-1 transition-transform text-xs"></i>
                 </button>
@@ -605,7 +655,6 @@
                     </div>
                     <input id="verificationName" type="text" placeholder="Nome completo *" class="w-full p-3 bg-white bg-opacity-10 text-white rounded-lg placeholder-white focus:outline-none focus:ring-2 focus:ring-white transition-colors">
                     <input id="verificationAge" type="number" placeholder="Idade *" class="w-full p-3 bg-white bg-opacity-10 text-white rounded-lg placeholder-white focus:outline-none focus:ring-2 focus:ring-white transition-colors">
-                    <input id="verificationEmail" type="email" placeholder="Email para contato (opcional)" class="w-full p-3 bg-white bg-opacity-10 text-white rounded-lg placeholder-white focus:outline-none focus:ring-2 focus:ring-white transition-colors">
                     <input id="verificationWhatsapp" type="tel" placeholder="WhatsApp para contato *" class="w-full p-3 bg-white bg-opacity-10 text-white rounded-lg placeholder-white focus:outline-none focus:ring-2 focus:ring-white transition-colors">
                     <textarea id="verificationReason" placeholder="Por que você quer ganhar o selo? *" class="w-full p-3 h-24 bg-white bg-opacity-10 text-white rounded-lg placeholder-white focus:outline-none focus:ring-2 focus:ring-white transition-colors resize-none"></textarea>
                     
@@ -787,6 +836,7 @@
         const postImagePreviewContainer = document.getElementById('postImagePreviewContainer');
         const postImagePreview = document.getElementById('postImagePreview');
         const postLimitMessage = document.getElementById('postLimitMessage');
+        const postFileWarning = document.getElementById('postFileWarning');
         const feed = document.getElementById('feed');
         const feedEndMessage = document.getElementById('feed-end-message');
         const feedTab = document.getElementById('feedTab');
@@ -799,6 +849,11 @@
         const editProfileButton = document.getElementById('editProfileButton');
         const rulesButton = document.getElementById('rulesButton');
         const draftsButton = document.getElementById('draftsButton');
+        const partnershipsButton = document.getElementById('partnershipsButton');
+        const partnershipsModal = document.getElementById('partnershipsModal');
+        const closePartnershipsModal = document.getElementById('closePartnershipsModal');
+        const copyEmailButton = document.getElementById('copyEmailButton');
+        const partnershipEmail = document.getElementById('partnershipEmail');
         const profileEditModal = document.getElementById('profileEditModal');
         const closeProfileEditModal = document.getElementById('closeProfileEditModal');
         const profileImage = document.getElementById('profileImage');
@@ -829,6 +884,7 @@
         const editPostImagePreview = document.getElementById('editPostImagePreview');
         const removeEditImage = document.getElementById('removeEditImage');
         const editPostImageFile = document.getElementById('editPostImageFile');
+        const editPostFileWarning = document.getElementById('editPostFileWarning');
         const saveEditedPost = document.getElementById('saveEditedPost');
         const editCommentModal = document.getElementById('editCommentModal');
         const closeEditCommentModal = document.getElementById('closeEditCommentModal');
@@ -1054,7 +1110,7 @@
 
         const createPostElement = async (post, isForProfilePage = false) => {
             const postElement = document.createElement('div');
-            postElement.classList.add('bg-black', 'p-4', 'rounded-xl', 'shadow-md', 'transition-transform', 'duration-200', 'transform', 'hover:scale-105', 'border', 'border-white', 'border-opacity-10');
+            postElement.classList.add('bg-black', 'p-4', 'rounded-xl', 'shadow-md', 'transition-all', 'duration-300', 'border', 'border-white', 'border-opacity-10');
             postElement.dataset.postId = post.id;
             postElement.dataset.isAnonymous = post.isAnonymous === true;
             postElement.dataset.userId = post.userId || 'anonimo';
@@ -1102,7 +1158,7 @@
             const likesCount = post.likesCount || 0;
             const commentsCount = post.commentsCount || 0;
             const postImageHtml = post.postImage ? `
-                <div class="mt-4 rounded-lg w-full max-h-80 overflow-hidden flex justify-center items-center bg-black">
+                <div class="mt-4 rounded-lg w-full max-h-72 overflow-hidden flex justify-center items-center bg-black">
                     <img src="${post.postImage}" alt="Post Image" class="w-full h-full object-contain cursor-pointer post-image-clickable">
                 </div>
             ` : '';
@@ -1120,7 +1176,7 @@
                 <div class="flex items-center mb-2">
                     ${profileLinkHtml}
                     <div class="ml-auto flex space-x-2">
-                         <button class="share-post-btn p-1 rounded-full text-white hover:text-white hover:bg-white hover:bg-opacity-10 transition-colors" data-id="${post.id}"><i class="fas fa-share-alt text-xs"></i></button>
+                        <button class="share-post-btn p-1 rounded-full text-white hover:text-white hover:bg-white hover:bg-opacity-10 transition-colors" data-id="${post.id}"><i class="fas fa-share-alt text-xs"></i></button>
                         ${canManagePost ? `
                             <button class="edit-btn p-1 rounded-full text-white hover:text-white hover:bg-white hover:bg-opacity-10 transition-colors" data-id="${post.id}"><i class="fas fa-edit text-xs"></i></button>
                             <button class="delete-btn p-1 rounded-full text-white hover:text-white hover:bg-white hover:bg-opacity-10 transition-colors" data-id="${post.id}"><i class="fas fa-trash text-xs"></i></button>
@@ -1130,7 +1186,7 @@
                 <p class="text-white text-base leading-relaxed break-words">${post.content}</p>
                 ${postImageHtml} ${postLinkHtml}
                 <div class="flex items-center space-x-4 mt-4 text-white">
-                    <button class="like-btn flex items-center space-x-2 hover:text-white transition-colors" data-id="${post.id}">
+                    <button class="like-btn relative flex items-center space-x-2 hover:text-white transition-colors" data-id="${post.id}">
                         <i class="fas fa-heart text-lg ${post.likedBy && post.likedBy[userId] ? 'text-red-500' : 'text-white text-opacity-50'}"></i>
                         <span class="text-sm">${likesCount}</span>
                     </button>
@@ -1491,7 +1547,7 @@
                             } else {
                                 notificationBadge.classList.add('hidden');
                                 if (notificationModal.classList.contains('hidden') === false) {
-                                  notificationList.innerHTML = '<p class="text-center text-white text-opacity-50">Nenhuma notificação por enquanto.</p>';
+                                    notificationList.innerHTML = '<p class="text-center text-white text-opacity-50">Nenhuma notificação por enquanto.</p>';
                                 }
                             }
                         });
@@ -1701,6 +1757,17 @@
 
         postImageFile.addEventListener('change', (e) => {
             const file = e.target.files[0];
+            postFileWarning.classList.add('hidden');
+            const maxFileSizeMB = 5;
+            if (file && file.size > maxFileSizeMB * 1024 * 1024) {
+                 postFileWarning.textContent = `A imagem/GIF não pode ter mais de ${maxFileSizeMB}MB.`;
+                 postFileWarning.classList.remove('hidden');
+                 postFileName.textContent = 'Selecionar Mídia (Imagem ou GIF)';
+                 postImagePreviewContainer.classList.add('hidden');
+                 postImagePreview.src = '';
+                 e.target.value = '';
+                 return;
+            }
             postFileName.textContent = file ? file.name : 'Selecionar Imagem (Opcional)';
             if (file) {
                 const reader = new FileReader();
@@ -2002,6 +2069,13 @@
 
             if (button.classList.contains('like-btn')) {
                 if (!userId) return;
+                
+                const likeIcon = button.querySelector('i');
+                const isCurrentlyLiked = likeIcon.classList.contains('text-red-500');
+                if (!isCurrentlyLiked) {
+                    triggerLikeAnimation(button);
+                }
+
                 try {
                     await runTransaction(db, async (transaction) => {
                         const postDoc = await transaction.get(postRef);
@@ -2235,13 +2309,21 @@
                     cardUsernameTop.textContent = profileData.username ? `@${profileData.username}` : (profileData.name || 'Usuário');
                     cardBio.textContent = profileData.bio || '';
                     
+                    socialLinksContainer.innerHTML = '';
+                    if (profileData.instagram) {
+                        socialLinksContainer.innerHTML += `<a href="https://instagram.com/${profileData.instagram}" target="_blank" class="text-2xl hover:text-pink-500"><i class="fab fa-instagram"></i></a>`;
+                    }
+                    if (profileData.tiktok) {
+                        socialLinksContainer.innerHTML += `<a href="https://tiktok.com/${profileData.tiktok}" target="_blank" class="text-2xl hover:text-white"><i class="fab fa-tiktok"></i></a>`;
+                    }
+
                     const setDetail = (element, label, value) => {
-                        if (value) {
-                            element.innerHTML = `<strong>${label}:</strong> ${value}`;
-                            element.classList.remove('hidden');
-                        } else {
-                            element.classList.add('hidden');
-                        }
+                         if (value) {
+                             element.innerHTML = `<strong>${label}:</strong> ${value}`;
+                             element.classList.remove('hidden');
+                         } else {
+                             element.classList.add('hidden');
+                         }
                     };
                     setDetail(cardPronouns, 'Pronomes', profileData.pronouns);
                     setDetail(cardGender, 'Gênero', profileData.gender);
@@ -2251,14 +2333,6 @@
                     setDetail(cardRelationshipStatus, 'Status', profileData.relationshipStatus);
                     setDetail(cardPersonality, 'Personalidade', profileData.personality);
                     
-                    socialLinksContainer.innerHTML = '';
-                    if (profileData.instagram) {
-                        socialLinksContainer.innerHTML += `<a href="https://instagram.com/${profileData.instagram}" target="_blank" class="text-2xl hover:text-pink-500"><i class="fab fa-instagram"></i></a>`;
-                    }
-                    if (profileData.tiktok) {
-                        socialLinksContainer.innerHTML += `<a href="https://tiktok.com/${profileData.tiktok}" target="_blank" class="text-2xl hover:text-white"><i class="fab fa-tiktok"></i></a>`;
-                    }
-
                     const photos = profileData.additionalPhotos || [];
                     const photosWrapper = document.getElementById('photosWrapper');
                     photosWrapper.innerHTML = '';
@@ -2277,24 +2351,26 @@
                     } else {
                         additionalPhotosContainer.classList.add('hidden');
                     }
+                });
+                cardPageListeners.set('profile', unsubscribeProfile);
 
-                    const shouldShowButton = isRegisteredUser && currentProfileCardOwnerId !== userId;
-                    if (shouldShowButton) {
-                        followButton.classList.remove('hidden');
-                        const followingRef = doc(db, `artifacts/${appId}/users/${userId}/following/${currentProfileCardOwnerId}`);
-                        const followingSnap = await getDoc(followingRef);
-                        if (followingSnap.exists()) {
+                if (isRegisteredUser && currentProfileCardOwnerId !== userId) {
+                    const followingRef = doc(db, `artifacts/${appId}/users/${userId}/following/${currentProfileCardOwnerId}`);
+                    const unsubscribeFollow = onSnapshot(followingRef, (docSnap) => {
+                        if (docSnap.exists()) {
                             followButton.innerHTML = `<i class="fas fa-user-check mr-2"></i> Seguindo`;
                             followButton.className = 'w-full max-w-xs mx-auto mt-4 bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95';
                         } else {
                             followButton.innerHTML = `<i class="fas fa-user-plus mr-2"></i> Seguir`;
                             followButton.className = 'w-full max-w-xs mx-auto mt-4 bg-white text-black font-semibold py-3 rounded-xl transition-all hover:bg-white hover:bg-opacity-80 active:scale-95';
                         }
-                    } else {
-                        followButton.classList.add('hidden');
-                    }
-                });
-                cardPageListeners.set('profile', unsubscribeProfile);
+                        followButton.classList.remove('hidden');
+                    });
+                    cardPageListeners.set('follow', unsubscribeFollow);
+                } else {
+                    followButton.classList.add('hidden');
+                }
+
 
                 const followerRef = collection(db, `artifacts/${appId}/users/${profileOwnerId}/followers`);
                 const unsubscribeFollower = onSnapshot(followerRef, (snapshot) => {
@@ -2357,8 +2433,11 @@
             userPostsFeed.innerHTML = '';
             cardFeedContent.classList.remove('hidden');
             cardPostsContent.classList.add('hidden');
-            // CORREÇÃO: Usa replaceState para evitar erro de segurança
-            history.replaceState(null, "", window.location.pathname);
+            try {
+                history.replaceState(null, "", window.location.pathname);
+            } catch (e) {
+                console.warn("Não foi possível limpar os parâmetros da URL devido a restrições de segurança:", e);
+            }
         });
         
         followButton.addEventListener('click', async () => {
@@ -2464,7 +2543,7 @@
 
                 const photosGrid = document.getElementById('editCardPhotosGrid');
                 photosGrid.innerHTML = '';
-                const photoLimit = profileCardData.isVerified ? 9 : 3;
+                const photoLimit = 5; // Alterado para o novo limite de 5
                 for (let i = 0; i < photoLimit; i++) {
                     const photoUrl = profileCardData.additionalPhotos && profileCardData.additionalPhotos[i] ? profileCardData.additionalPhotos[i] : '';
                     const photoInputHTML = `
@@ -2602,8 +2681,11 @@
             const postIdParam = params.get('post');
 
             if (userIdParam || postIdParam) {
-                // CORREÇÃO: Usa replaceState para evitar erro de segurança
-                history.replaceState(null, "", window.location.pathname);
+                try {
+                    history.replaceState(null, "", window.location.pathname);
+                } catch (e) {
+                    console.warn("Não foi possível limpar os parâmetros da URL devido a restrições de segurança:", e);
+                }
             }
 
             if (userIdParam) {
@@ -2630,10 +2712,13 @@
                         if (postElement) {
                             clearInterval(interval);
                             postElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            postElement.classList.add('post-highlight');
-                            setTimeout(() => { postElement.classList.remove('post-highlight'); }, 2500);
+                            postElement.classList.add('post-highlight-shake');
+                            if ("vibrate" in navigator) {
+                                navigator.vibrate([100, 50, 100]);
+                            }
+                            setTimeout(() => { postElement.classList.remove('post-highlight-shake'); }, 1000);
                         }
-                    }, 200);
+                    }, 100);
                 }
             }
         };
@@ -2742,15 +2827,15 @@
 
             if (!name || !age || !whatsapp || !reason || !imageFile) {
                  const customAlert = document.createElement('div');
-                  customAlert.className = 'fixed inset-0 z-[100] bg-black bg-opacity-90 flex items-center justify-center';
-                  customAlert.innerHTML = `
-                       <div class="bg-black rounded-2xl p-6 w-11/12 sm:w-1/2 md:w-1/3 lg:w-1/4 flex flex-col items-center text-center space-y-4 border border-white border-opacity-20">
-                           <p class="text-lg font-semibold">Preencha todos os campos obrigatórios (*).</p>
-                           <button class="w-1/2 bg-white text-black py-2 rounded-xl transition-all hover:bg-white hover:bg-opacity-80 active:scale-95" onclick="this.closest('.fixed').remove()">OK</button>
-                       </div>
-                  `;
-                  document.body.appendChild(customAlert);
-                  return;
+                 customAlert.className = 'fixed inset-0 z-[100] bg-black bg-opacity-90 flex items-center justify-center';
+                 customAlert.innerHTML = `
+                        <div class="bg-black rounded-2xl p-6 w-11/12 sm:w-1/2 md:w-1/3 lg:w-1/4 flex flex-col items-center text-center space-y-4 border border-white border-opacity-20">
+                            <p class="text-lg font-semibold">Preencha todos os campos obrigatórios (*).</p>
+                            <button class="w-1/2 bg-white text-black py-2 rounded-xl transition-all hover:bg-white hover:bg-opacity-80 active:scale-95" onclick="this.closest('.fixed').remove()">OK</button>
+                        </div>
+                    `;
+                 document.body.appendChild(customAlert);
+                 return;
             }
 
             showSpinner(submitVerificationRequest);
@@ -2763,7 +2848,6 @@
 
                 const requestData = {
                     userId, name, age, whatsapp, reason,
-                    email: document.getElementById('verificationEmail').value.trim(),
                     timestamp: serverTimestamp(),
                     status: 'pending',
                     userImageUrl: imageUrl
@@ -2793,7 +2877,7 @@
         });
 
         const checkVerificationStatus = () => {
-              if (!isRegisteredUser || !userId) {
+             if (!isRegisteredUser || !userId) {
                 verificationPage.classList.add('hidden');
                 return;
             }
@@ -2829,6 +2913,7 @@
                         default:
                             message = 'Aguarde, um moderador irá analisar seu perfil.';
                             colorClass = 'bg-yellow-500 bg-opacity-10 text-yellow-400';
+                            verificationFormContainer.classList.remove('hidden');
                             break;
                     }
                     verificationStatusMessage.textContent = message;
@@ -3015,7 +3100,7 @@
                 notificationModal.classList.remove('hidden');
                 notificationBadge.classList.add('hidden');
                 if (notificationList.innerHTML === '') {
-                  notificationList.innerHTML = '<p class="text-center text-white text-opacity-50">Nenhuma notificação por enquanto.</p>';
+                    notificationList.innerHTML = '<p class="text-center text-white text-opacity-50">Nenhuma notificação por enquanto.</p>';
                 }
             } else {
                  authModal.classList.remove('hidden');
@@ -3096,6 +3181,102 @@
             };
             settingsModal.classList.add('hidden');
         });
+
+        // New partnerships modal handlers
+        partnershipsButton.addEventListener('click', () => {
+            partnershipsModal.classList.remove('hidden');
+            closeMenu();
+        });
+        closePartnershipsModal.addEventListener('click', () => {
+            partnershipsModal.classList.add('hidden');
+        });
+        copyEmailButton.addEventListener('click', () => {
+            copyToClipboard(partnershipEmail.textContent);
+        });
+
+        const particleCanvas = document.getElementById('particleCanvas');
+        const ctx = particleCanvas.getContext('2d');
+        let particles = [];
+        let animationFrameId;
+
+        const noiseSynth = new Tone.NoiseSynth({
+            noise: { type: 'pink' },
+            envelope: { attack: 0.001, decay: 0.4, sustain: 0, release: 0.4 }
+        });
+        const lowpass = new Tone.Filter(1000, 'lowpass').toDestination();
+        const volume = new Tone.Volume(-15).toDestination();
+        noiseSynth.connect(lowpass);
+        lowpass.connect(volume);
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 5 + 2;
+                this.color = ['#c00000', '#ff0000', '#ff4d4d', '#ffffff'][Math.floor(Math.random() * 4)];
+                this.opacity = 1;
+                const angle = Math.random() * 2 * Math.PI;
+                const speed = Math.random() * 2 + 1;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.opacity -= 0.02;
+                this.size *= 0.98;
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].opacity <= 0.05 || particles[i].size <= 0.5) {
+                    particles.splice(i, 1);
+                }
+            }
+            if (particles.length > 0) {
+                animationFrameId = requestAnimationFrame(animateParticles);
+            } else {
+                particleCanvas.style.display = 'none';
+                cancelAnimationFrame(animationFrameId);
+            }
+        }
+
+        async function triggerLikeAnimation(button) {
+            const rect = button.getBoundingClientRect();
+            particleCanvas.width = window.innerWidth;
+            particleCanvas.height = window.innerHeight;
+            particleCanvas.style.display = 'block';
+            
+            particles = [];
+            const startX = rect.left + rect.width / 2;
+            const startY = rect.top + rect.height / 2;
+
+            for (let i = 0; i < 20; i++) {
+                particles.push(new Particle(startX, startY));
+            }
+
+            if (Tone.context.state !== 'running') {
+                await Tone.start();
+            }
+            noiseSynth.triggerAttackRelease(0.1);
+            if ("vibrate" in navigator) {
+                navigator.vibrate(100);
+            }
+            
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            animateParticles();
+        }
 
 
         window.onload = startApp;
