@@ -61,24 +61,6 @@
             pointer-events: none;
             z-index: 100;
         }
-
-        .chat-container {
-            position: fixed;
-            top: 6rem;
-            right: -100%;
-            width: 100%;
-            max-width: 320px;
-            height: calc(100vh - 10rem);
-            background-color: #1a1a1a;
-            border-left: 1px solid #333;
-            z-index: 30;
-            transition: right 0.3s ease-in-out;
-            display: flex;
-            flex-direction: column;
-        }
-        .chat-container.open {
-            right: 0;
-        }
     </style>
 </head>
 <body class="bg-black text-white p-4">
@@ -99,9 +81,6 @@
             Rave
         </h1>
         <div class="flex space-x-2 items-center">
-            <button id="chatButton" class="p-2 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-colors">
-                <i class="fas fa-comment-dots text-2xl"></i>
-            </button>
             <button id="searchButton" class="p-2 rounded-full text-white hover:bg-white hover:bg-opacity-10 transition-colors">
                 <i class="fas fa-search text-2xl"></i>
             </button>
@@ -113,22 +92,7 @@
             </div>
         </div>
     </header>
-    
-    <div id="chatContainer" class="chat-container">
-        <div class="p-4 bg-black border-b border-white border-opacity-10 flex justify-between items-center">
-            <h2 class="font-bold">Chat Global</h2>
-            <button id="closeChatButton" class="text-white text-xl">&times;</button>
-        </div>
-        <div id="chatMessages" class="flex-grow p-4 overflow-y-auto scrolling-container space-y-3">
-            </div>
-        <div class="p-4 bg-black border-t border-white border-opacity-10 flex space-x-2">
-            <input type="text" id="chatInput" placeholder="Enviar mensagem..." class="w-full p-2 bg-white bg-opacity-10 rounded-lg text-sm placeholder-white focus:outline-none focus:ring-2 focus:ring-white">
-            <button id="sendChatButton" class="p-2 bg-white text-black rounded-lg hover:bg-white hover:bg-opacity-80 transition-colors active:scale-95">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
-    </div>
-    
+
     <nav class="flex justify-center space-x-2 my-4 flex-shrink-0">
         <button id="feedTab" class="py-1 px-3 rounded-lg font-semibold text-sm transition-colors duration-200 bg-white text-black">
             Feed
@@ -200,6 +164,7 @@
                     <i class="fas fa-gavel mr-2"></i> Regras do App
                 </button>
 
+                <!-- Nova seção Parcerias adicionada -->
                 <div id="partnershipsSection" class="w-full space-y-2 mt-4">
                     <button id="partnershipsButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
                         <i class="fas fa-handshake mr-2"></i> Parcerias
@@ -231,7 +196,7 @@
                 </button>
             </div>
             <div class="w-full space-y-2">
-                <button id="editProfileCardButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
+                 <button id="editProfileCardButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
                     <i class="fas fa-address-card mr-2"></i> Editar Card
                 </button>
                 <button id="changePasswordButton" class="w-full bg-white bg-opacity-10 text-white font-semibold py-3 rounded-xl transition-all hover:bg-opacity-20 active:scale-95">
@@ -330,6 +295,7 @@
         </div>
     </div>
 
+    <!-- Novo Modal de Parcerias -->
     <div id="partnershipsModal" class="fixed inset-0 z-50 bg-black bg-opacity-90 hidden flex items-center justify-center">
         <div class="w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3 bg-black rounded-2xl p-6 shadow-2xl flex flex-col space-y-4 border border-white border-opacity-20 max-h-[80vh] overflow-y-auto scrolling-container">
             <button id="closePartnershipsModal" class="absolute top-4 right-4 text-white hover:text-white transition-colors">
@@ -384,7 +350,8 @@
         </div>
 
         <div id="feed" class="w-full max-w-lg space-y-4 overflow-y-auto scrolling-container h-full pt-4">
-            </div>
+            <!-- As postagens serão injetadas aqui -->
+        </div>
         <div id="feed-end-message" class="text-center text-white text-opacity-50 py-8 hidden"><p>Você chegou ao fim.</p></div>
     </main>
     
@@ -495,7 +462,7 @@
             <div id="cardHeader" class="relative w-full h-32 sm:h-40 bg-white bg-opacity-10 rounded-xl overflow-hidden">
                 <img id="cardHeaderImage" src="" class="absolute inset-0 w-full h-full object-cover">
             </div>
-            <div class="relative -mt-12 z-10 flex flex-col items-center">
+             <div class="relative -mt-12 z-10 flex flex-col items-center">
                 <div id="cardProfileImageContainer" class="w-24 h-24 rounded-full border-4 border-black bg-white flex items-center justify-center overflow-hidden">
                     <img id="cardProfileImage" src="" class="w-full h-full object-cover hidden">
                     <i id="cardProfilePlaceholder" class="fas fa-user text-4xl text-black"></i>
@@ -539,7 +506,7 @@
             
             <div class="w-full max-w-lg mx-auto px-4">
                 <div class="flex space-x-4 border-b border-white border-opacity-10">
-                    <button id="cardFeedTab" class="flex-1 py-2 text-sm font-semibold border-b-2 border-white text-white">Card</button>
+                    <button id="cardFeedTab" class="flex-1 py-2 text-sm font-semibold border-b-2 border-white text-white">Feed</button>
                     <button id="cardPostsTab" class="flex-1 py-2 text-sm font-semibold border-b-2 border-transparent text-gray-400">Postagens</button>
                 </div>
             </div>
@@ -579,7 +546,7 @@
                 <div class="w-24 h-24 rounded-full bg-white flex items-center justify-center overflow-hidden relative -mt-12 z-10 border-4 border-black">
                     <img id="editCardProfilePreview" src="" class="w-full h-full object-cover">
                     <label for="editCardProfileFile" class="absolute w-full h-full rounded-full cursor-pointer flex items-center justify-center bg-black bg-opacity-50 hover:bg-opacity-70 transition-colors">
-                        <i class="fas fa-camera text-xl text-white"></i>
+                         <i class="fas fa-camera text-xl text-white"></i>
                     </label>
                     <input id="editCardProfileFile" type="file" accept="image/*,image/gif" class="hidden" data-preview="editCardProfilePreview">
                 </div>
@@ -640,7 +607,8 @@
                 <div class="w-full space-y-2">
                     <p class="text-sm text-white text-opacity-70">Fotos adicionais (opcional):</p>
                     <div id="editCardPhotosGrid" class="grid grid-cols-3 gap-2">
-                        </div>
+                        <!-- Photo inputs will be generated by JS -->
+                    </div>
                 </div>
 
                 <div id="cardUploadProgress" class="text-center text-white text-opacity-50 text-sm hidden"></div>
@@ -789,6 +757,7 @@
 
     <div id="copyFeedback" class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-green-500 text-white text-sm px-4 py-2 rounded-full hidden z-[100]">Link copiado!</div>
 
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { 
@@ -843,12 +812,6 @@
         
         const mainHeader = document.getElementById('mainHeader');
         const profileButton = document.getElementById('profileButton');
-        const chatButton = document.getElementById('chatButton');
-        const chatContainer = document.getElementById('chatContainer');
-        const closeChatButton = document.getElementById('closeChatButton');
-        const chatMessages = document.getElementById('chatMessages');
-        const chatInput = document.getElementById('chatInput');
-        const sendChatButton = document.getElementById('sendChatButton');
         const searchButton = document.getElementById('searchButton');
         const notificationButton = document.getElementById('notificationButton');
         const notificationBadge = document.getElementById('notificationBadge');
@@ -1071,7 +1034,6 @@
         let verifiedUsersListener = null;
         let notificationListener = null;
         const postListeners = new Map();
-        let chatListener = null;
         
         const showSpinner = (button, text = '') => {
             button.disabled = true;
@@ -1535,8 +1497,6 @@
             isRegisteredUser = user && !user.isAnonymous;
             postFab.style.display = isRegisteredUser ? 'flex' : 'none';
             notificationButton.classList.toggle('hidden', !isRegisteredUser);
-            chatInput.disabled = !isRegisteredUser;
-            sendChatButton.disabled = !isRegisteredUser;
 
             if (isRegisteredUser) {
                 loggedInButtons.classList.remove('hidden');
@@ -1599,7 +1559,6 @@
                 } else {
                     try { await signInAnonymously(auth); } catch (error) { console.error("Erro ao fazer login anônimo:", error); }
                 }
-                loadChatMessages();
                 switchTab('feed');
                 handleDirectLinks();
             });
@@ -2114,22 +2073,9 @@
                 const likeIcon = button.querySelector('i');
                 const isCurrentlyLiked = likeIcon.classList.contains('text-red-500');
                 if (!isCurrentlyLiked) {
-                    // Start optimistic update
-                    const likesCountSpan = button.querySelector('span');
-                    const currentLikes = parseInt(likesCountSpan.textContent);
-                    likesCountSpan.textContent = currentLikes + 1;
-                    likeIcon.classList.add('text-red-500');
-                    likeIcon.classList.remove('text-white', 'text-opacity-50');
                     triggerLikeAnimation(button);
-                } else {
-                    // Revert optimistic update
-                    const likesCountSpan = button.querySelector('span');
-                    const currentLikes = parseInt(likesCountSpan.textContent);
-                    likesCountSpan.textContent = Math.max(0, currentLikes - 1);
-                    likeIcon.classList.remove('text-red-500');
-                    likeIcon.classList.add('text-white', 'text-opacity-50');
                 }
-                
+
                 try {
                     await runTransaction(db, async (transaction) => {
                         const postDoc = await transaction.get(postRef);
@@ -2142,13 +2088,6 @@
                     });
                 } catch(error) {
                     console.error("Erro ao curtir a postagem:", error);
-                    // Revert UI on error
-                    const likesCountSpan = button.querySelector('span');
-                    const currentLikes = parseInt(likesCountSpan.textContent);
-                    likesCountSpan.textContent = isCurrentlyLiked ? currentLikes + 1 : Math.max(0, currentLikes - 1);
-                    likeIcon.classList.toggle('text-red-500', isCurrentlyLiked);
-                    likeIcon.classList.toggle('text-white', !isCurrentlyLiked);
-                    likeIcon.classList.toggle('text-opacity-50', !isCurrentlyLiked);
                 }
             }
             
@@ -2446,7 +2385,7 @@
 
                 profileCardPage.classList.remove('hidden');
                 
-                showCardTab('card', profileOwnerId);
+                showCardTab('feed', profileOwnerId);
 
             } catch(error) { console.error("Erro ao carregar card de perfil:", error); }
         };
@@ -2458,7 +2397,7 @@
             cardPostsTab.classList.remove('border-white', 'text-white');
             cardPostsTab.classList.add('border-transparent', 'text-gray-400');
 
-            if (tabName === 'card') {
+            if (tabName === 'feed') {
                 cardFeedTab.classList.add('border-white', 'text-white');
                 cardFeedContent.classList.remove('hidden');
                 cardPostsContent.classList.add('hidden');
@@ -2470,7 +2409,7 @@
             }
         };
 
-        cardFeedTab.addEventListener('click', () => showCardTab('card', currentProfileCardOwnerId));
+        cardFeedTab.addEventListener('click', () => showCardTab('feed', currentProfileCardOwnerId));
         cardPostsTab.addEventListener('click', () => showCardTab('posts', currentProfileCardOwnerId));
         
         document.body.addEventListener('click', async (e) => {
@@ -2604,8 +2543,7 @@
 
                 const photosGrid = document.getElementById('editCardPhotosGrid');
                 photosGrid.innerHTML = '';
-                const userProfile = await getCachedUserProfile(userId);
-                const photoLimit = userProfile.isVerified ? 9 : 3;
+                const photoLimit = 5; // Alterado para o novo limite de 5
                 for (let i = 0; i < photoLimit; i++) {
                     const photoUrl = profileCardData.additionalPhotos && profileCardData.additionalPhotos[i] ? profileCardData.additionalPhotos[i] : '';
                     const photoInputHTML = `
@@ -2618,7 +2556,7 @@
                 }
                 
                 editProfileCardPage.classList.remove('hidden');
-                settingsModal.classList.add('hidden');
+                closeMenu();
             } catch (error) { console.error("Erro ao carregar dados do card de perfil para edição:", error); }
         });
         
@@ -2698,7 +2636,6 @@
 
                 await setDoc(profileCardRef, newCardData, { merge: true });
                 cardUploadProgress.textContent = "Card salvo com sucesso!";
-                await updateAllUiWithProfileChange(userId);
                 setTimeout(() => { editProfileCardPage.classList.add('hidden'); }, 1000);
             } catch(error) {
                 console.error("Erro ao salvar card:", error);
@@ -2892,11 +2829,11 @@
                  const customAlert = document.createElement('div');
                  customAlert.className = 'fixed inset-0 z-[100] bg-black bg-opacity-90 flex items-center justify-center';
                  customAlert.innerHTML = `
-                         <div class="bg-black rounded-2xl p-6 w-11/12 sm:w-1/2 md:w-1/3 lg:w-1/4 flex flex-col items-center text-center space-y-4 border border-white border-opacity-20">
-                             <p class="text-lg font-semibold">Preencha todos os campos obrigatórios (*).</p>
-                             <button class="w-1/2 bg-white text-black py-2 rounded-xl transition-all hover:bg-white hover:bg-opacity-80 active:scale-95" onclick="this.closest('.fixed').remove()">OK</button>
-                         </div>
-                     `;
+                        <div class="bg-black rounded-2xl p-6 w-11/12 sm:w-1/2 md:w-1/3 lg:w-1/4 flex flex-col items-center text-center space-y-4 border border-white border-opacity-20">
+                            <p class="text-lg font-semibold">Preencha todos os campos obrigatórios (*).</p>
+                            <button class="w-1/2 bg-white text-black py-2 rounded-xl transition-all hover:bg-white hover:bg-opacity-80 active:scale-95" onclick="this.closest('.fixed').remove()">OK</button>
+                        </div>
+                    `;
                  document.body.appendChild(customAlert);
                  return;
             }
@@ -3341,157 +3278,6 @@
             animateParticles();
         }
 
-        // Chat functionality
-        const chatMessages = document.getElementById('chatMessages');
-        let chatLastDoc = null;
-        let isChatLoading = false;
-        
-        const loadChatMessages = () => {
-            if (chatListener) {
-                chatListener();
-                chatListener = null;
-            }
-            chatMessages.innerHTML = '<p class="text-center text-white text-opacity-50">Carregando mensagens...</p>';
-            
-            const chatRef = collection(db, `artifacts/${appId}/public/data/chat`);
-            const q = query(chatRef, orderBy('timestamp', 'desc'), limit(50));
-
-            chatListener = onSnapshot(q, (snapshot) => {
-                const messages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                messages.sort((a, b) => a.timestamp?.toMillis() - b.timestamp?.toMillis());
-                chatMessages.innerHTML = '';
-                messages.forEach(async message => {
-                    const messageElement = await createChatMessageElement(message);
-                    chatMessages.appendChild(messageElement);
-                });
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, (error) => {
-                console.error("Erro ao carregar chat:", error);
-                chatMessages.innerHTML = '<p class="text-center text-red-400">Erro ao carregar o chat.</p>';
-            });
-        };
-        
-        const createChatMessageElement = async (message) => {
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('flex', 'items-start', 'space-x-2', 'chat-message');
-            const messageOwnerId = message.userId || 'anonimo';
-            const isMyMessage = messageOwnerId === userId;
-            
-            const userProfile = await getCachedUserProfile(messageOwnerId);
-            const isVerified = userProfile.isVerified === true;
-            const verificationSealHtml = isVerified ? `<img src="${verificationSealUrl}" alt="Verificado" class="verification-seal">` : '';
-
-            let userAvatarUrl = userProfile.image || 'https://placehold.co/200x200/000000/FFFFFF?text=?';
-            let userName = userProfile.name || `Usuário ${messageOwnerId.substring(0, 8)}...`;
-            
-            let messageContent = message.content;
-            messageContent = messageContent.replace(/@(\S+)/g, (match, username) => {
-                // Find user by username and create a link
-                const mentionedUser = Array.from(userProfileCache.values()).find(u => u.username === username);
-                if (mentionedUser) {
-                    return `<span class="text-blue-400 cursor-pointer mention-link" data-user-id="${mentionedUser.userId}">@${username}</span>`;
-                }
-                return match;
-            });
-            
-            messageElement.innerHTML = `
-                <button class="flex-shrink-0 chat-profile-link" data-user-id="${messageOwnerId}">
-                    <img src="${userAvatarUrl}" class="w-8 h-8 rounded-full object-cover">
-                </button>
-                <div class="flex-grow bg-white bg-opacity-10 p-3 rounded-lg text-sm relative">
-                    <div class="flex items-center space-x-1">
-                        <span class="font-bold text-white chat-profile-link" data-user-id="${messageOwnerId}">${userName}</span>
-                        ${verificationSealHtml}
-                    </div>
-                    <p class="text-white text-opacity-90 break-words mt-1 chat-content">${messageContent}</p>
-                    <button class="absolute top-1 right-2 text-white text-opacity-50 hover:text-white edit-chat-btn ${isMyMessage ? '' : 'hidden'}" data-message-id="${message.id}"><i class="fas fa-edit text-xs"></i></button>
-                    <button class="absolute top-1 right-8 text-white text-opacity-50 hover:text-white delete-chat-btn ${isMyMessage ? '' : 'hidden'}" data-message-id="${message.id}"><i class="fas fa-trash text-xs"></i></button>
-                </div>
-            `;
-            return messageElement;
-        };
-        
-        const deleteOldChatMessages = async () => {
-            const chatRef = collection(db, `artifacts/${appId}/public/data/chat`);
-            const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-            const q = query(chatRef, where('timestamp', '<', Timestamp.fromDate(twentyFourHoursAgo)));
-            const oldMessagesSnapshot = await getDocs(q);
-            const batch = writeBatch(db);
-            oldMessagesSnapshot.forEach(doc => {
-                batch.delete(doc.ref);
-            });
-            await batch.commit();
-        };
-
-        setInterval(deleteOldChatMessages, 60 * 60 * 1000); // Run every hour
-
-        chatButton.addEventListener('click', () => {
-            chatContainer.classList.toggle('open');
-        });
-        
-        closeChatButton.addEventListener('click', () => {
-            chatContainer.classList.remove('open');
-        });
-        
-        sendChatButton.addEventListener('click', async () => {
-            const message = chatInput.value.trim();
-            if (!message || !isRegisteredUser) return;
-            
-            const chatRef = collection(db, `artifacts/${appId}/public/data/chat`);
-            const chatMessage = {
-                content: message,
-                userId,
-                userName: currentUserProfile.name,
-                userImage: currentUserProfile.image,
-                timestamp: serverTimestamp()
-            };
-            
-            try {
-                await addDoc(chatRef, chatMessage);
-                chatInput.value = '';
-            } catch (error) {
-                console.error("Erro ao enviar mensagem no chat:", error);
-            }
-        });
-        
-        chatInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                sendChatButton.click();
-            }
-        });
-
-        // Chat message actions
-        chatMessages.addEventListener('click', async (e) => {
-            const target = e.target;
-            const profileLink = target.closest('.chat-profile-link');
-            const editBtn = target.closest('.edit-chat-btn');
-            const deleteBtn = target.closest('.delete-chat-btn');
-
-            if (profileLink) {
-                const userId = profileLink.dataset.userId;
-                if (userId) {
-                    openProfileCard(userId);
-                    chatContainer.classList.remove('open');
-                }
-            } else if (editBtn) {
-                const messageId = editBtn.dataset.messageId;
-                // Implement edit functionality here
-            } else if (deleteBtn) {
-                const messageId = deleteBtn.dataset.messageId;
-                confirmationModalText.textContent = "Tem certeza que deseja apagar esta mensagem do chat?";
-                deleteConfirmationModal.classList.remove('hidden');
-                confirmationCallback = async () => {
-                    const messageRef = doc(db, `artifacts/${appId}/public/data/chat/${messageId}`);
-                    try {
-                        await deleteDoc(messageRef);
-                    } catch (error) {
-                        console.error("Erro ao apagar mensagem do chat:", error);
-                    } finally {
-                        deleteConfirmationModal.classList.add('hidden');
-                    }
-                };
-            }
-        });
 
         window.onload = startApp;
 
